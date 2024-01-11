@@ -1,0 +1,17 @@
+source /oldff/leaprc.ff99 
+source leaprc.water.tip3p
+set default PBRadii mbondi2
+
+com = loadpdb 6m0j_noHet.pdb  
+cov = loadpdb 6m0j_noHet_cov.pdb 
+rcp = loadpdb 6m0j_noHet_recpt.pdb
+
+saveamberparm com 6m0j_noHet.prmtop 6m0j_noHet.inpcrd
+saveamberparm cov 6m0j_noHet_cov.prmtop 6m0j_noHet_cov.inpcrd
+saveamberparm rcp 6m0j_noHet_recpt.prmtop 6m0j_noHet_recpt.inpcrd
+solvatebox com TIP3PBOX 12.0
+saveamberparm com 6m0j_noHet_solvated.prmtop 6m0j_noHet_solvated.inpcrd
+
+
+
+
