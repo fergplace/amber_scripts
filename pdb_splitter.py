@@ -17,8 +17,8 @@ def pdb_split(pdb_data, option) -> list:
                 if line.startswith('TER') :
                     return data #break once we get to first Ter as option 0
             
-            #need to check for Ter after store line starting with Ter due to receptor 
-            #of pdb files, TER line belongs to receptor. 
+            #need to check for Ter after store line starting with Ter due to structure 
+            #of pdb files, TER line belongs to structure. 
             if line.startswith('TER') and (ter_state==0) :
                 ter_state =1
                 continue 
@@ -48,7 +48,8 @@ def mutations(pdb_data, name_from, name_to, idx) -> list:
 
     return mutated_cov
 
-def tleap_wild(pdbfh_base_name):
+
+def tleap_wild(pdbfh_base_name,file_handle_mut_all ):
      
     tleap_wild_in = [f"source /oldff/leaprc.ff99",
         f"source leaprc.water.tip3p",
@@ -60,10 +61,13 @@ def tleap_wild(pdbfh_base_name):
         f"saveamberparm cov {pdbfh_base_name}_cov.prmtop {pdbfh_base_name}_cov.inpcrd",
         f"saveamberparm rcp {pdbfh_base_name}_recpt.prmtop {pdbfh_base_name}_recpt.inpcrd",
         f"solvatebox com TIP3PBOX 12.0",
-        f"saveamberparm com {pdbfh_base_name}_solvated.prmtop {pdbfh_base_name}_solvated.inpcrd"]
+        f"saveamberparm com {pdbfh_base_name}_solvated.prmtop {pdbfh_base_name}_solvated.inpcrd",
+        f"com_mut = loadpdb {file_handle_mut_all}.pdb",
+        f"cov_mut = loadpdb {file_handle_mut_all}_cov.pdb",
+        f"saveamberparm com_mut {file_handle_mut_all}.prmtop {file_handle_mut_all}.inpcrd",
+        f"saveamberparm cov_mut {file_handle_mut_all}_cov.prmtop {file_handle_mut_all}_cov.inpcrd",
+        f"quit"]
     return tleap_wild_in
-    
-    
 
 def main():
     
@@ -89,10 +93,10 @@ def main():
         pdb_data = f.readlines()
 
     #splits
-    recep_pdb_data = pdb_split(pdb_data, 1 )
-    file_handle_receptor = pdbfh_base_name + "_recept.pdb"
-    with open(file_handle_receptor, "w+") as pdb_file : 
-        for line in recep_pdb_data : 
+    struct_pdb_data = pdb_split(pdb_data, 1 )
+    file_handle_structure = pdbfh_base_name + "_struct.pdb"
+    with open(file_handle_structure, "w+") as pdb_file : 
+        for line in struct_pdb_data : 
             pdb_file.write(f"{line}")
         pdb_file.close()
     
@@ -106,14 +110,12 @@ def main():
     #mutations:
     #cov_mutation
     mutation_pdb_data = mutations(cov_pdb, name_from, name_to, idx)
-    file_handle_mut_base = pdbfh_base_name + "_cov"+"_" + name_from_char+ idx + name_to_char + ".pdb"
-    file_handle_mut = file_handle_mut_base + ".pdb"
+    file_handle_mut_base = pdbfh_base_name +"_" + name_from_char+ idx + name_to_char + ".pdb"
+    file_handle_mut = file_handle_mut_base + "_cov.pdb"
     with open(file_handle_mut, "w+") as pdb_file : 
         for line in mutation_pdb_data : 
             pdb_file.write(f"{line}")
         pdb_file.close()
-        
-        
     #full file mutation
     mutation_pdb_data_all = mutations(pdb_data, name_from, name_to, idx)
     file_handle_mut_all_base = pdbfh_base_name +"_" + name_from_char+ idx + name_to_char 
@@ -123,15 +125,14 @@ def main():
             pdb_file.write(f"{line}")
         pdb_file.close()
     
-    tleap_wild_in = tleap_wild(pdbfh_base_name)
-
+    
+    #tleap gen
+    tleap_wild_in = tleap_wild(pdbfh_base_name, file_handle_mut_all_base)
     with open("tleap_wild.in", "w+") as tleap : 
         for line in tleap_wild_in : 
-            tleap.write(f"{line}")
+            tleap.write(f"{line}\n")
         tleap.close()
 
 
-
-    
 if __name__ == '__main__':
     main()
