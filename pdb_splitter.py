@@ -1,76 +1,107 @@
 import os
 import sys
-
 #split our file, call with 0 for struc, 1 for cov 
 
-ter_state = 0 
-
-def check_input(args):
-    """Checks whether to read from stdin/file and validates user input/options.
-    """
-
-    # Defaults
-    option = ''
-    fh = sys.stdin  # file handle
-    option = args[0][1]
-    fh = open(args[1], 'r')
-    return (fh, option )
-
-def run(fhandle, option):
+def pdb_split(pdb_data, option) -> list:
 
     #ignore HET and other line starts: 
+    ter_state = 0 
     records = ('ATOM', 'ANISOU', 'TER')
-    for line in fhandle:
+    data = []
+    
+    for line in pdb_data:
         if line.startswith(records):
-            
             if (option == 0) and (ter_state==0)  : 
-                yield line
+                data.append(line)
                 
-                if line.startswith('Ter') :
-                    break #break once we get to first Ter as option 0
+                if line.startswith('TER') :
+                    return data #break once we get to first Ter as option 0
             
             #need to check for Ter after store line starting with Ter due to structure 
             #of pdb files, TER line belongs to structure. 
-            if line.startswith('Ter')and (ter_state==0) :
+            if line.startswith('TER') and (ter_state==0) :
                 ter_state =1
                 continue 
-            
             if (option == 1 ) and (ter_state==1): 
-                yield line
-            else:
-                continue 
-            
-delete_residue_by_name = run
+                data.append(line)
+                
+    return data
+
+def mutations(pdb_data, name_from, name_to, idx) -> list:
+
+    counter = 0 
+    records = ('ATOM', 'HETATM', 'TER', 'ANISOU')
+    mutated_cov = [] 
+    
+    for line in pdb_data:
+        if line.startswith(records):
+            if (line[17:20].strip() in name_from) and (line[22:26].strip() in idx):
+                #add cases here for longer ones... 
+                if counter <= 4 : #count for ALA:  
+                    new_line= line[:17] + name_to.rjust(3) + line[20:]
+                    mutated_cov.append(new_line)
+                    counter = counter + 1 
+                    continue
+                else :
+                    continue
+        mutated_cov.append(line)
+
+    return mutated_cov
+
 
 def main():
-    # Check Input TODO fix input arg selection 
-    pdbfh, resname_set , idx= check_input(sys.argv[1:])
+    
+    inputs = sys.argv[1:]
+    pdbfh = inputs[0]
+    pdbfh_base_name = pdbfh.split(".")[0]
+    name_from_char, idx, name_to_char = inputs[1].split(":")
+    #dict for char to code conversion 
+    amino_acid_dict = {"A": "ALA", "V": "VAL", \
+                    "I":"LLE", "L":"LEU", "M":"MET", \
+                    "F":"PHE", "Y":"TYR", "W":"TRP" , \
+                    "S":"SER", "T":"THR", "N":"ASN", \
+                    "Q":"GLN", "C":"CYS","U":"SEC", \
+                    "G":"GLY", "P":"PRO", "R":"ARG", \
+                    "H":"HIS", "K":"LYS", "D":"ASP", \
+                    "E":"GLU"}
+    #convert to 3 letter code
+    name_from   = amino_acid_dict[name_from_char]
+    name_to     = amino_acid_dict[name_to_char]
+    
+    #open the file:
+    with open(pdbfh, "r") as f :
+        pdb_data = f.readlines()
 
-    # Do the job
-    new_pdb = run(pdbfh, resname_set, idx)
-
-    try:
-        _buffer = []
-        _buffer_size = 5000  # write N lines at a time
-        for lineno, line in enumerate(new_pdb):
-            if not (lineno % _buffer_size):
-                sys.stdout.write(''.join(_buffer))
-                _buffer = []
-            _buffer.append(line)
-
-        sys.stdout.write(''.join(_buffer))
-        sys.stdout.flush()
-    except IOError:
-        # This is here to catch Broken Pipes
-        # for example to use 'head' or 'tail' without
-        # the error message showing up
-        pass
-
-    # last line of the script
-    # We can close it even if it is sys.stdin
-    pdbfh.close()
-    sys.exit(0)
-
-
+    #splits
+    struct_pdb_data = pdb_split(pdb_data, 1 )
+    file_handle_structure = pdbfh_base_name + "_struct.pdb"
+    with open(file_handle_structure, "w+") as pdb_file : 
+        for line in struct_pdb_data : 
+            pdb_file.write(f"{line}")
+        pdb_file.close()
+    
+    cov_pdb = pdb_split(pdb_data, 0 )
+    file_handle_covid = pdbfh_base_name + "_cov.pdb"
+    with open(file_handle_covid, "w+") as pdb_file : 
+        for line in cov_pdb : 
+            pdb_file.write(f"{line}")
+        pdb_file.close()
+    
+    #mutations:
+    #cov_mutation
+    mutation_pdb_data = mutations(cov_pdb, name_from, name_to, idx)
+    file_handle_mut = pdbfh_base_name + "_cov"+"_" + name_from_char+ idx + name_to_char + ".pdb"
+    with open(file_handle_mut, "w+") as pdb_file : 
+        for line in mutation_pdb_data : 
+            pdb_file.write(f"{line}")
+        pdb_file.close()
+    #full file mutation
+    mutation_pdb_data_all = mutations(pdb_data, name_from, name_to, idx)
+    file_handle_mut = pdbfh_base_name +"_" + name_from_char+ idx + name_to_char + ".pdb"
+    with open(file_handle_mut, "w+") as pdb_file : 
+        for line in mutation_pdb_data_all : 
+            pdb_file.write(f"{line}")
+        pdb_file.close()
+        
 if __name__ == '__main__':
     main()
