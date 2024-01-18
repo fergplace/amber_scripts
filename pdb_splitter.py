@@ -49,8 +49,8 @@ def mutations(pdb_data, name_from, name_to, idx) -> list:
     return mutated_cov
 
 
-def tleap_wild(pdbfh_base_name,file_handle_mut_all ):
-     
+def tleap_gen(pdbfh_base_name,file_handle_mut_all ):
+    #standard leap.in 
     tleap_wild_in = [f"source /oldff/leaprc.ff99",
         f"source leaprc.water.tip3p",
         f"set default PBRadii mbondi2",
@@ -127,9 +127,9 @@ def main():
     
     
     #tleap gen
-    tleap_wild_in = tleap_wild(pdbfh_base_name, file_handle_mut_all_base)
-    with open("tleap_wild.in", "w+") as tleap : 
-        for line in tleap_wild_in : 
+    tleap_mut_in = tleap_gen(pdbfh_base_name, file_handle_mut_all_base)
+    with open("tleap_mut.in", "w+") as tleap : 
+        for line in tleap_mut_in : 
             tleap.write(f"{line}\n")
         tleap.close()
 
