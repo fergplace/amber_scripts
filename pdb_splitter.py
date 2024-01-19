@@ -50,7 +50,8 @@ def mutations(pdb_data, name_from, name_to, idx) -> list:
 
 
 def tleap_gen(pdbfh_base_name,file_handle_mut_all ):
-    #standard leap.in 
+    #standard leap.in for mut files 
+    #TODO add options for radii, box, FF
     tleap_wild_in = [f"source /oldff/leaprc.ff99",
         f"source leaprc.water.tip3p",
         f"set default PBRadii mbondi2",
@@ -69,6 +70,30 @@ def tleap_gen(pdbfh_base_name,file_handle_mut_all ):
         f"quit"]
     return tleap_wild_in
 
+def mut_bash( pdbfh_base_name, file_handle_mut_all) :
+    
+    
+    mut_bash_sh = [f"#!/bin/bash",
+
+                f"#SBATCH --job-name=run_66_mut"
+                f"#SBATCH --partition=gpu"
+                f"#SBATCH --output=run_mmpbsa_66.out"
+                f"#SBATCH --error=run_mmpbsa_66.error"
+                f"#SBATCH --time=48:00:00"
+                f'''echo "Loading modules..."'''    
+                f"module load amber " 
+                f"source /opt/calstatela/amber-22/amber22/amber.sh"
+                f"$AMBERHOME/bin/MMPBSA.py.MPI -O -i 
+                mmpbsa_mut_66.in -o 
+                FINAL_RESULTS_MMPBSA_tleap_{file_handle_mut_all}.dat 
+                -sp {pdbfh_base_name}_solvated.prmtop 
+                -cp {pdbfh_base_name}.prmtop 
+                -rp {pdbfh_base_name}_recpt.prmtop 
+                -lp{pdbfh_base_name}_cov.prmtop  
+                -y *.mdcrd 
+                -mc {file_handle_mut_all}.prmtop
+                -ml {file_handle_mut_all}_cov.prmtop"]
+    return mut_bash_sh
 def main():
     
     inputs = sys.argv[1:]
@@ -133,6 +158,11 @@ def main():
             tleap.write(f"{line}\n")
         tleap.close()
 
-
+    mut_bash_file = mut_bash(pdbfh_base_name, file_handle_mut_all_base)
+    with open("run_MMPBSA.sh", "w+") as mut_bash_sh : 
+        for line in mut_bash_file : 
+            mut_bash_sh.write(f"{line}\n")
+        mut_bash_sh.close()
+        
 if __name__ == '__main__':
     main()
