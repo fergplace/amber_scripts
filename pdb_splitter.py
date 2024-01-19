@@ -6,7 +6,7 @@ def pdb_split(pdb_data, option) -> list:
     '''
     pdb_data    : pdb file we want to split
     option      : option will determine if we want to get the receptor or the ligand,
-    receptor =1, ligand =0 
+    receptor =0, ligand =1 
      
     returns     : split as a list 
     '''
@@ -105,7 +105,7 @@ def mut_bash( pdbfh_base_name, file_handle_mut_all) :
         f'''echo "Loading modules..."'''  ,  
         f"module load amber " ,
         f"source /opt/calstatela/amber-22/amber22/amber.sh",
-        f"""$AMBERHOME/bin/MMPBSA.py.MPI -O -i \
+        f"""$AMBERHOME/bin/MMPBSA.py -O -i \
 mmpbsa_mut_66.in -o \
 FINAL_RESULTS_MMPBSA_tleap_{file_handle_mut_all}.dat\
  -sp {pdbfh_base_name}_solvated.prmtop\
@@ -142,14 +142,14 @@ def main():
         pdb_data = f.readlines()
 
     #splits
-    struct_pdb_data = pdb_split(pdb_data, 1 )
+    struct_pdb_data = pdb_split(pdb_data, 0 )
     file_handle_structure = pdbfh_base_name + "_recpt.pdb"
     with open(file_handle_structure, "w+") as pdb_file : 
         for line in struct_pdb_data : 
             pdb_file.write(f"{line}")
         pdb_file.close()
     
-    cov_pdb = pdb_split(pdb_data, 0 )
+    cov_pdb = pdb_split(pdb_data, 1 )
     file_handle_covid = pdbfh_base_name + "_cov.pdb"
     with open(file_handle_covid, "w+") as pdb_file : 
         for line in cov_pdb : 
