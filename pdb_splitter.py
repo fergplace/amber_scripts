@@ -113,6 +113,7 @@ def main():
     name_from   = amino_acid_dict[name_from_char]
     name_to     = amino_acid_dict[name_to_char]
     
+    naming_conv = name_from_char+ idx + name_to_char
     #open the file:
     with open(pdbfh, "r") as f :
         pdb_data = f.readlines()
@@ -135,7 +136,7 @@ def main():
     #mutations:
     #cov_mutation
     mutation_pdb_data = mutations(cov_pdb, name_from, name_to, idx)
-    file_handle_mut_base = pdbfh_base_name +"_" + name_from_char+ idx + name_to_char + ".pdb"
+    file_handle_mut_base = pdbfh_base_name +"_" + naming_conv + ".pdb"
     file_handle_mut = file_handle_mut_base + "_cov.pdb"
     with open(file_handle_mut, "w+") as pdb_file : 
         for line in mutation_pdb_data : 
@@ -143,7 +144,7 @@ def main():
         pdb_file.close()
     #full file mutation
     mutation_pdb_data_all = mutations(pdb_data, name_from, name_to, idx)
-    file_handle_mut_all_base = pdbfh_base_name +"_" + name_from_char+ idx + name_to_char 
+    file_handle_mut_all_base = pdbfh_base_name +"_" + naming_conv 
     file_handle_mut_all = file_handle_mut_all_base + ".pdb"
     with open(file_handle_mut_all, "w+") as pdb_file : 
         for line in mutation_pdb_data_all : 
