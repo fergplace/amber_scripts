@@ -88,7 +88,7 @@ FINAL_RESULTS_MMPBSA_tleap_{file_handle_mut_all}.dat\
  -sp {pdbfh_base_name}_solvated.prmtop\
  -cp {pdbfh_base_name}.prmtop\
  -rp {pdbfh_base_name}_recpt.prmtop\
- -lp{pdbfh_base_name}_cov.prmtop \
+ -lp {pdbfh_base_name}_cov.prmtop \
  -y *.mdcrd\
  -mc {file_handle_mut_all}.prmtop\
  -ml {file_handle_mut_all}_cov.prmtop"""
