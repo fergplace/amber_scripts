@@ -1,5 +1,6 @@
 import os
 import sys
+import subprocess
 #split our file, call with 0 for struc, 1 for cov 
 
 def pdb_split(pdb_data, option) -> list:
@@ -52,19 +53,20 @@ def mutations(pdb_data, name_from, name_to, idx) -> list:
 def tleap_gen(pdbfh_base_name,file_handle_mut_all ):
     #standard leap.in for mut files 
     #TODO add options for radii, box, FF
-    tleap_wild_in = [f"source /oldff/leaprc.ff99",
+    pdbfh_base_name_cov = pdbfh_base_name+ "_cov"
+    tleap_wild_in = [f"source oldff/leaprc.ff99",
         f"source leaprc.water.tip3p",
-        f"set default PBRadii mbondi2",
+        f"set default PBRadii mbondi2\n",
         f"com = loadpdb {pdbfh_base_name}.pdb"  ,
-        f"cov = loadpdb{ pdbfh_base_name}_cov.pdb" ,
-        f"rcp = loadpdb {pdbfh_base_name}_recpt.pdb",
+        f"cov = loadpdb {pdbfh_base_name}_cov.pdb" ,
+        f"rcp = loadpdb {pdbfh_base_name}_recpt.pdb\n",
         f"saveamberparm com {pdbfh_base_name}.prmtop {pdbfh_base_name}.inpcrd",
-        f"saveamberparm cov {pdbfh_base_name}_cov.prmtop {pdbfh_base_name}_cov.inpcrd",
+        f"saveamberparm cov {pdbfh_base_name_cov}.prmtop {pdbfh_base_name_cov}.inpcrd",
         f"saveamberparm rcp {pdbfh_base_name}_recpt.prmtop {pdbfh_base_name}_recpt.inpcrd",
         f"solvatebox com TIP3PBOX 12.0",
-        f"saveamberparm com {pdbfh_base_name}_solvated.prmtop {pdbfh_base_name}_solvated.inpcrd",
+        f"saveamberparm com {pdbfh_base_name}_solvated.prmtop {pdbfh_base_name}_solvated.inpcrd\n",
         f"com_mut = loadpdb {file_handle_mut_all}.pdb",
-        f"cov_mut = loadpdb {file_handle_mut_all}_cov.pdb",
+        f"cov_mut = loadpdb {file_handle_mut_all}_cov.pdb\n",
         f"saveamberparm com_mut {file_handle_mut_all}.prmtop {file_handle_mut_all}.inpcrd",
         f"saveamberparm cov_mut {file_handle_mut_all}_cov.prmtop {file_handle_mut_all}_cov.inpcrd",
         f"quit"]
@@ -75,7 +77,7 @@ def mut_bash( pdbfh_base_name, file_handle_mut_all) :
     
     mut_bash_sh = [f"#!/bin/bash",
         f"#SBATCH --job-name=run_66_mut",
-        f"#SBATCH --partition=gpu",
+        f"#SBATCH --partition=cpu",
         f"#SBATCH --output=run_mmpbsa_66.out",
         f"#SBATCH --error=run_mmpbsa_66.error",
         f"#SBATCH --time=48:00:00",
@@ -120,7 +122,7 @@ def main():
 
     #splits
     struct_pdb_data = pdb_split(pdb_data, 1 )
-    file_handle_structure = pdbfh_base_name + "_struct.pdb"
+    file_handle_structure = pdbfh_base_name + "_recpt.pdb"
     with open(file_handle_structure, "w+") as pdb_file : 
         for line in struct_pdb_data : 
             pdb_file.write(f"{line}")
@@ -136,16 +138,15 @@ def main():
     #mutations:
     #cov_mutation
     mutation_pdb_data = mutations(cov_pdb, name_from, name_to, idx)
-    file_handle_mut_base = pdbfh_base_name +"_" + naming_conv + ".pdb"
+    file_handle_mut_base = pdbfh_base_name +"_" + naming_conv
     file_handle_mut = file_handle_mut_base + "_cov.pdb"
     with open(file_handle_mut, "w+") as pdb_file : 
         for line in mutation_pdb_data : 
             pdb_file.write(f"{line}")
         pdb_file.close()
     #full file mutation
-    mutation_pdb_data_all = mutations(pdb_data, name_from, name_to, idx)
-    file_handle_mut_all_base = pdbfh_base_name +"_" + naming_conv 
-    file_handle_mut_all = file_handle_mut_all_base + ".pdb"
+    mutation_pdb_data_all = mutations(pdb_data, name_from, name_to, idx) 
+    file_handle_mut_all = file_handle_mut_base + ".pdb"
     with open(file_handle_mut_all, "w+") as pdb_file : 
         for line in mutation_pdb_data_all : 
             pdb_file.write(f"{line}")
@@ -153,17 +154,21 @@ def main():
     
     
     #tleap gen
-    tleap_mut_in = tleap_gen(pdbfh_base_name, file_handle_mut_all_base)
+    tleap_mut_in = tleap_gen(pdbfh_base_name, file_handle_mut_base)
     with open("tleap_mut.in", "w+") as tleap : 
         for line in tleap_mut_in : 
             tleap.write(f"{line}\n")
         tleap.close()
-
-    mut_bash_file = mut_bash(pdbfh_base_name, file_handle_mut_all_base)
+    #sh file gen
+    mut_bash_file = mut_bash(pdbfh_base_name, file_handle_mut_base)
     with open("run_MMPBSA.sh", "w+") as mut_bash_sh : 
         for line in mut_bash_file : 
             mut_bash_sh.write(f"{line}\n")
         mut_bash_sh.close()
-        
+    
+    os.system("dos2unix tleap_mut.in")
+    os.system("tleap -s -f tleap_mut.in > tleap_mut.out")
+    
+    #os.system("sbatch run_MMPBSA.sh")
 if __name__ == '__main__':
     main()
