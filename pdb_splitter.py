@@ -105,13 +105,13 @@ def mut_bash( pdbfh_base_name, file_handle_mut_all) :
         f'''echo "Loading modules..."'''  ,  
         f"module load amber " ,
         f"source /opt/calstatela/amber-22/amber22/amber.sh",
-        f"""$AMBERHOME/bin/MMPBSA.py.MPI -O -i \ 
+        f"""$AMBERHOME/bin/MMPBSA.py.MPI -O -i \
 mmpbsa_mut_66.in -o \
 FINAL_RESULTS_MMPBSA_tleap_{file_handle_mut_all}.dat\
  -sp {pdbfh_base_name}_solvated.prmtop\
  -cp {pdbfh_base_name}.prmtop\
  -rp {pdbfh_base_name}_recpt.prmtop\
- -lp {pdbfh_base_name}_cov.prmtop \
+ -lp {pdbfh_base_name}_cov.prmtop\
  -y *.mdcrd\
  -mc {file_handle_mut_all}.prmtop\
  -ml {file_handle_mut_all}_cov.prmtop"""
