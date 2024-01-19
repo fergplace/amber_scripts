@@ -53,7 +53,6 @@ def mutations(pdb_data, name_from, name_to, idx) -> list:
 def tleap_gen(pdbfh_base_name,file_handle_mut_all ):
     #standard leap.in for mut files 
     #TODO add options for radii, box, FF
-    pdbfh_base_name_cov = pdbfh_base_name+ "_cov"
     tleap_wild_in = [f"source oldff/leaprc.ff99",
         f"source leaprc.water.tip3p",
         f"set default PBRadii mbondi2\n",
@@ -61,7 +60,7 @@ def tleap_gen(pdbfh_base_name,file_handle_mut_all ):
         f"cov = loadpdb {pdbfh_base_name}_cov.pdb" ,
         f"rcp = loadpdb {pdbfh_base_name}_recpt.pdb\n",
         f"saveamberparm com {pdbfh_base_name}.prmtop {pdbfh_base_name}.inpcrd",
-        f"saveamberparm cov {pdbfh_base_name_cov}.prmtop {pdbfh_base_name_cov}.inpcrd",
+        f"saveamberparm cov {pdbfh_base_name}_cov.prmtop {pdbfh_base_name}_cov.inpcrd",
         f"saveamberparm rcp {pdbfh_base_name}_recpt.prmtop {pdbfh_base_name}_recpt.inpcrd",
         f"solvatebox com TIP3PBOX 12.0",
         f"saveamberparm com {pdbfh_base_name}_solvated.prmtop {pdbfh_base_name}_solvated.inpcrd\n",
