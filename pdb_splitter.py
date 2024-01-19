@@ -1,10 +1,15 @@
 import os
 import sys
 import subprocess
-#split our file, call with 0 for struc, 1 for cov 
 
 def pdb_split(pdb_data, option) -> list:
-
+    '''
+    pdb_data    : pdb file we want to split
+    option      : option will determine if we want to get the receptor or the ligand,
+    receptor =1, ligand =0 
+     
+    returns     : split as a list 
+    '''
     #ignore HET and other line starts: 
     ter_state = 0 
     records = ('ATOM', 'ANISOU', 'TER')
@@ -29,7 +34,14 @@ def pdb_split(pdb_data, option) -> list:
     return data
 
 def mutations(pdb_data, name_from, name_to, idx) -> list:
-
+    '''
+    pdb_data    : pdb file we want to mutate
+    name_from   : three letter name for the initial amino acid 
+    name_to     : three letter name for the final amino acid
+    idx         : index of the mutation 
+    
+    returns     : mutated pdb as a list 
+    '''
     counter = 0 
     records = ('ATOM', 'HETATM', 'TER', 'ANISOU')
     mutated_cov = [] 
@@ -50,7 +62,12 @@ def mutations(pdb_data, name_from, name_to, idx) -> list:
     return mutated_cov
 
 
-def tleap_gen(pdbfh_base_name,file_handle_mut_all ):
+def tleap_gen(pdbfh_base_name,file_handle_mut_all ) -> list:
+    '''
+    pdbfh_base_name     : base name of the pdb file
+    file_handle_mut_all : base bame of the mutated file 
+    returns             : tleap file as a list 
+    '''
     #standard leap.in for mut files 
     #TODO add options for radii, box, FF
     tleap_wild_in = [f"source oldff/leaprc.ff99",
@@ -72,7 +89,11 @@ def tleap_gen(pdbfh_base_name,file_handle_mut_all ):
     return tleap_wild_in
 
 def mut_bash( pdbfh_base_name, file_handle_mut_all) :
-    
+    '''
+    pdbfh_base_name     : base name of the pdb file
+    file_handle_mut_all : base bame of the mutated file 
+    returns             : .sh file as a list 
+    '''
     
     mut_bash_sh = [f"#!/bin/bash",
         f"#SBATCH --job-name=run_66_mut",
@@ -165,9 +186,12 @@ def main():
             mut_bash_sh.write(f"{line}\n")
         mut_bash_sh.close()
     
+    #convert to tleap to unix to be safe
     os.system("dos2unix tleap_mut.in")
+    #run tleap to get solvated files 
     os.system("tleap -s -f tleap_mut.in > tleap_mut.out")
-    
+    ##TODO: finish the MMPBSA call, just need to have a source for the intial 
+    #MMPBSA files, then the .sh should be fine. 
     #os.system("sbatch run_MMPBSA.sh")
 if __name__ == '__main__':
     main()
