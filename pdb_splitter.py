@@ -193,6 +193,6 @@ def main():
     os.system("tleap -s -f tleap_mut.in > tleap_mut.out")
     ##TODO: finish the MMPBSA call, just need to have a source for the intial 
     #MMPBSA files, then the .sh should be fine. 
-    #os.system("sbatch run_MMPBSA.sh")
+    os.system("sbatch run_MMPBSA.sh")
 if __name__ == '__main__':
     main()
