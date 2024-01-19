@@ -11,6 +11,7 @@ def pdb_split(pdb_data, option) -> list:
     returns     : split as a list 
     '''
     #ignore HET and other line starts: 
+    #NOTE: no need to use the no_HET srouce files, this will strip the files of the HET
     ter_state = 0 
     records = ('ATOM', 'ANISOU', 'TER')
     data = []
@@ -104,8 +105,8 @@ def mut_bash( pdbfh_base_name, file_handle_mut_all) :
         f'''echo "Loading modules..."'''  ,  
         f"module load amber " ,
         f"source /opt/calstatela/amber-22/amber22/amber.sh",
-        f"""$AMBERHOME/bin/MMPBSA.py.MPI -O -i\
-mmpbsa_mut_66.in -o\
+        f"""$AMBERHOME/bin/MMPBSA.py.MPI -O -i \ 
+mmpbsa_mut_66.in -o \
 FINAL_RESULTS_MMPBSA_tleap_{file_handle_mut_all}.dat\
  -sp {pdbfh_base_name}_solvated.prmtop\
  -cp {pdbfh_base_name}.prmtop\
