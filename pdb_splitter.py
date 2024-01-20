@@ -89,10 +89,11 @@ def tleap_gen(pdbfh_base_name,file_handle_mut_all ) -> list:
         f"quit"]
     return tleap_wild_in
 
-def mut_bash( pdbfh_base_name, file_handle_mut_all) :
+def mut_bash( pdbfh_base_name, file_handle_mut_all, cwd) :
     '''
     pdbfh_base_name     : base name of the pdb file
     file_handle_mut_all : base bame of the mutated file 
+    cwd                 : cwd where script was called, this is parent dir afer chdir call
     returns             : .sh file as a list 
     '''
     
@@ -106,17 +107,38 @@ def mut_bash( pdbfh_base_name, file_handle_mut_all) :
         f"module load amber " ,
         f"source /opt/calstatela/amber-22/amber22/amber.sh",
         f"""$AMBERHOME/bin/MMPBSA.py -O -i \
-mmpbsa_mut_66.in -o \
+mmpbsa.in -o \
 FINAL_RESULTS_MMPBSA_tleap_{file_handle_mut_all}.dat\
  -sp {pdbfh_base_name}_solvated.prmtop\
  -cp {pdbfh_base_name}.prmtop\
  -rp {pdbfh_base_name}_recpt.prmtop\
  -lp {pdbfh_base_name}_cov.prmtop\
- -y *.mdcrd\
+ -y {cwd}/*.mdcrd\
  -mc {file_handle_mut_all}.prmtop\
  -ml {file_handle_mut_all}_cov.prmtop"""
         ]
     return mut_bash_sh
+
+def mmpbsa_in()->list:
+    #TODO make this custom 
+    mmpbsa_in_data = [
+"""
+sample input file for running alanine scanning
+ &general
+   startframe=1, endframe=200, interval=1,
+   verbose=1, 
+/
+&gb
+  igb=66, saltcon=0.1
+/
+&pb
+  istrng=0.100
+/
+&alanine_scanning
+/
+"""]
+    return mmpbsa_in_data
+
 def main():
     
     inputs = sys.argv[1:]
@@ -136,11 +158,32 @@ def main():
     name_from   = amino_acid_dict[name_from_char]
     name_to     = amino_acid_dict[name_to_char]
     
+    #get cwd
+    cwd = os.getcwd()
+    #get the three letter code as a str e.g. E484A
     naming_conv = name_from_char+ idx + name_to_char
+    #make a directory named: base_name_naming-conv_dir
+    #string for dir name
+    dir_name = pdbfh_base_name + "_" + naming_conv + "_dir"
+    #path to dir
+    dir_name_path = "./" + dir_name
+    #path for other files
+    os.system(f"mkdir {dir_name_path}")
+    
+    
+    dir_name_path_full = dir_name_path + "/"
+    #new name for pdb in the dir
+    pdbfh_in_dir = dir_name_path_full + pdbfh
+    pdbfh_base_name_in_dir = dir_name_path_full + pdbfh_base_name
+    #copy the base pdb into new dir
+    os.system(f"cp {pdbfh} {pdbfh_in_dir}")
+    #update base name to the file in subdir
+    #pdbfh_base_name = pdbfh_base_name_in_dir
+    
+    os.chdir(dir_name_path)
     #open the file:
     with open(pdbfh, "r") as f :
         pdb_data = f.readlines()
-
     #splits
     struct_pdb_data = pdb_split(pdb_data, 0 )
     file_handle_structure = pdbfh_base_name + "_recpt.pdb"
@@ -176,23 +219,35 @@ def main():
     
     #tleap gen
     tleap_mut_in = tleap_gen(pdbfh_base_name, file_handle_mut_base)
+    #tleap_name = dir_name_path_full +"tleap_mut.in"
+    #tleap_name_out = dir_name_path_full + "tleap_mut.out"
     with open("tleap_mut.in", "w+") as tleap : 
         for line in tleap_mut_in : 
             tleap.write(f"{line}\n")
         tleap.close()
+        
+    
     #sh file gen
-    mut_bash_file = mut_bash(pdbfh_base_name, file_handle_mut_base)
+    mut_bash_file = mut_bash(pdbfh_base_name, file_handle_mut_base, cwd)
+    #run_MMPBSA_name = dir_name_path_full + "run_MMPBSA.sh"
     with open("run_MMPBSA.sh", "w+") as mut_bash_sh : 
         for line in mut_bash_file : 
             mut_bash_sh.write(f"{line}\n")
         mut_bash_sh.close()
     
+    mmpbsa_in_list = mmpbsa_in()
+    with open("mmpbsa.in", "w+") as mmpbsa:
+        for line in mmpbsa_in_list :
+            mmpbsa.write(f"{line}")
+        mmpbsa.close()
+    
+    
     #convert to tleap to unix to be safe
-    os.system("dos2unix tleap_mut.in")
-    #run tleap to get solvated files 
-    os.system("tleap -s -f tleap_mut.in > tleap_mut.out")
+    os.system(f"dos2unix tleap_mut.in")
+    #run tleap to get solvated files
+    os.system(f"tleap -s -f tleap_mut.in > tleap_mut.out")
     ##TODO: finish the MMPBSA call, just need to have a source for the intial 
     #MMPBSA files, then the .sh should be fine. 
-    os.system("sbatch run_MMPBSA.sh")
+    os.system(f"sbatch run_MMPBSA.sh")
 if __name__ == '__main__':
     main()
