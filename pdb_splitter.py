@@ -68,6 +68,8 @@ def tleap_gen(pdbfh_base_name,file_handle_mut_all ) -> list:
     pdbfh_base_name     : base name of the pdb file
     file_handle_mut_all : base bame of the mutated file 
     returns             : tleap file as a list 
+    
+    #TODO: add inputs for radii, leaprc, TIP3PBOX
     '''
     #standard leap.in for mut files 
     #TODO add options for radii, box, FF
@@ -120,7 +122,25 @@ FINAL_RESULTS_MMPBSA_tleap_{file_handle_mut_all}.dat\
     return mut_bash_sh
 
 def mmpbsa_in()->list:
-    #TODO make this custom 
+    """
+    #TODO make this custom, 
+    inputs: 
+    start_frame :
+    end_frame
+    interval : 
+    
+    gb:
+    igb:
+    saltcon
+    
+    pb:
+    istring:
+    
+    return: mmpbsa_in_data as a list
+    
+    # use line.startswith(records): for case structure
+    """
+     
     mmpbsa_in_data = [
 """
 sample input file for running alanine scanning
@@ -139,6 +159,23 @@ sample input file for running alanine scanning
 """]
     return mmpbsa_in_data
 
+
+def input_args_from_text( file_handle ) -> list :
+    """
+    #TODO: will want to be able to read inputs based on flags from input file
+    
+    can do option for file path to mmpbsa
+    can do option for file path to tleap input file
+    #input for *mdcrd input file generation 
+    
+    """
+    
+    with open(file_handle) as input_file :
+        for line in input_file : 
+            input_arg_list = [] #add real input here
+        
+    return input_arg_list 
+#TODO move most of this into a function so we can loop over for all muts. 
 def main():
     
     inputs = sys.argv[1:]
@@ -174,13 +211,14 @@ def main():
     dir_name_path_full = dir_name_path + "/"
     #new name for pdb in the dir
     pdbfh_in_dir = dir_name_path_full + pdbfh
+    #TODO: dont need this, can remove later
     pdbfh_base_name_in_dir = dir_name_path_full + pdbfh_base_name
     #copy the base pdb into new dir
     os.system(f"cp {pdbfh} {pdbfh_in_dir}")
     #update base name to the file in subdir
     #pdbfh_base_name = pdbfh_base_name_in_dir
     
-    os.chdir(dir_name_path)
+    os.chdir(dir_name_path) #note the change back use chdir("..")
     #open the file:
     with open(pdbfh, "r") as f :
         pdb_data = f.readlines()
@@ -249,5 +287,7 @@ def main():
     ##TODO: finish the MMPBSA call, just need to have a source for the intial 
     #MMPBSA files, then the .sh should be fine. 
     os.system(f"sbatch run_MMPBSA.sh")
+    
+    
 if __name__ == '__main__':
     main()
