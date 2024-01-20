@@ -168,6 +168,8 @@ def input_args_from_text( file_handle ) -> list :
     can do option for file path to tleap input file
     #input for *mdcrd input file generation 
     
+    
+    for full list of mmpbsa args: https://ambermd.org/doc12/Amber22.pdf
     """
     
     with open(file_handle) as input_file :
