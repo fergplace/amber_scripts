@@ -1,5 +1,5 @@
 #input WILD_TYPE 
-#input MUTATIONS E:484:A Y:565:C
+#input MUTATIONS F:486:A Y:505:A N:501:A
 #input *MDCRD_DIRECTORY 
 #input LEAP.IN_PATH 
 #input MMPBSA.IN_PATH 
