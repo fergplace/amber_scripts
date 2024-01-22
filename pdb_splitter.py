@@ -199,39 +199,18 @@ def input_args_from_text( file_handle ) -> list :
     return input_arg_list 
 #TODO move most of this into a function so we can loop over for all muts. 
 
-def general_method(input_dict) : 
+def general_method(input_dict, pdbfh, pdbfh_base_name, mutation) : 
     """
     general process: 
-    
+    input_dict: from input_args_check
+    mut_num : range(len(input_dict["MUTATIONS"]))
     """
-    pdbfh = inputs[0]
+    ##TODO, maybe bring this ourside, dont need to do it more than once... 
+    #could just pass mutation 
+    # pdbfh = input_dict["WILD_TYPE"]
+    #pdbfh_base_name = os.path.basename(pdbfh).split(".")[0] #getting the base name 
     
-    
-    
-    return 
-
-
-def main():
-    
-    
-    inputs = sys.argv[1:]
-    in_file = inputs[0]
-    input_dict = input_args_check(in_file)
-    
-    #TODO loop over mutations
-    general_method(input_dict)
-    
-    
-    
-    inputs = sys.argv[1:]
-    pdbfh = inputs[0]
-    
-    
-    pdbfh_base_name = pdbfh.split(".")[0]
-    name_from_char, idx, name_to_char = inputs[1].split(":")
-    
-    
-    
+    name_from_char, idx, name_to_char = mutation.split(":")
     #dict for char to code conversion 
     amino_acid_dict = {"A": "ALA", "V": "VAL", \
                     "I":"LLE", "L":"LEU", "M":"MET", \
@@ -267,8 +246,11 @@ def main():
     os.system(f"cp {pdbfh} {pdbfh_in_dir}")
     #update base name to the file in subdir
     #pdbfh_base_name = pdbfh_base_name_in_dir
-    
     os.chdir(dir_name_path) #note the change back use chdir("..")
+    
+    #####################################################################################
+    ############################## splitting and mutations ##############################
+    #####################################################################################
     #open the file:
     with open(pdbfh, "r") as f :
         pdb_data = f.readlines()
@@ -279,14 +261,12 @@ def main():
         for line in struct_pdb_data : 
             pdb_file.write(f"{line}")
         pdb_file.close()
-    
     cov_pdb = pdb_split(pdb_data, 1 )
     file_handle_covid = pdbfh_base_name + "_cov.pdb"
     with open(file_handle_covid, "w+") as pdb_file : 
         for line in cov_pdb : 
             pdb_file.write(f"{line}")
         pdb_file.close()
-    
     #mutations:
     #cov_mutation
     mutation_pdb_data = mutations(cov_pdb, name_from, name_to, idx)
@@ -304,8 +284,9 @@ def main():
             pdb_file.write(f"{line}")
         pdb_file.close()
     
-    
-    #tleap gen
+    #####################################################################################
+    #################################### tleap gen ######################################
+    #####################################################################################
     tleap_mut_in = tleap_gen(pdbfh_base_name, file_handle_mut_base)
     #tleap_name = dir_name_path_full +"tleap_mut.in"
     #tleap_name_out = dir_name_path_full + "tleap_mut.out"
@@ -337,6 +318,40 @@ def main():
     ##TODO: finish the MMPBSA call, just need to have a source for the intial 
     #MMPBSA files, then the .sh should be fine. 
     os.system(f"sbatch run_MMPBSA.sh")
+    
+    return 
+
+
+def main():
+    
+    
+    inputs = sys.argv[1:]
+    in_file = inputs[0]
+    input_dict = input_args_check(in_file)
+    
+    
+    pdbfh = input_dict["WILD_TYPE"]
+    pdbfh_base_name = os.path.basename(pdbfh).split(".")[0] #getting the base name 
+    
+    #TODO loop over mutations
+    
+    for i in range(len(input_dict["MUTATIONS"])) : 
+        mutation = input_dict["MUTATIONS"][i]
+        general_method(input_dict, pdbfh, pdbfh_base_name, mutation)
+    
+    
+    
+    
+    
+    
+    # inputs = sys.argv[1:]
+    # pdbfh = inputs[0]
+    
+    
+    # pdbfh_base_name = pdbfh.split(".")[0]
+    # name_from_char, idx, name_to_char = inputs[1].split(":")
+    
+    
     
     
 if __name__ == '__main__':
