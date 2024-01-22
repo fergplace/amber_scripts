@@ -1,0 +1,6 @@
+#input WILD_TYPE 
+#input MUTATIONS E:484:A Y:565:C
+#input *MDCRD_DIRECTORY 
+#input LEAP.IN_PATH 
+#input MMPBSA.IN_PATH 
+ 

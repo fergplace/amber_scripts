@@ -2,6 +2,26 @@ import os
 import sys
 import subprocess
 
+def input_args_check( input_arg_path) -> dict :
+    cwd = os.getcwd()
+    input_fields={"WILD_TYPE": 0, 
+                "MUTATIONS":0,
+                "*MDCRD_DIRECTORY": cwd, 
+                "LEAP.IN_PATH" : 0, 
+                "MMPBSA.IN_PATH": 0 }
+
+    with open("tmp_input_file.txt", "r") as input_file:
+            for line in input_file:
+                    if line.startswith("#input"):
+                            tmp_key = line.split() #split
+                            if tmp_key[2:] != [] : #check for null input 
+                                    input_fields[tmp_key[1]] = tmp_key[2:] #for args of len >1 e.g. MUTATIONS
+    
+    
+    ##TODO error without an input pdb and a mutation 
+    return input_fields
+
+
 def pdb_split(pdb_data, option) -> list:
     '''
     pdb_data    : pdb file we want to split
@@ -178,12 +198,40 @@ def input_args_from_text( file_handle ) -> list :
         
     return input_arg_list 
 #TODO move most of this into a function so we can loop over for all muts. 
+
+def general_method(input_dict) : 
+    """
+    general process: 
+    
+    """
+    pdbfh = inputs[0]
+    
+    
+    
+    return 
+
+
 def main():
+    
+    
+    inputs = sys.argv[1:]
+    in_file = inputs[0]
+    input_dict = input_args_check(in_file)
+    
+    #TODO loop over mutations
+    general_method(input_dict)
+    
+    
     
     inputs = sys.argv[1:]
     pdbfh = inputs[0]
+    
+    
     pdbfh_base_name = pdbfh.split(".")[0]
     name_from_char, idx, name_to_char = inputs[1].split(":")
+    
+    
+    
     #dict for char to code conversion 
     amino_acid_dict = {"A": "ALA", "V": "VAL", \
                     "I":"LLE", "L":"LEU", "M":"MET", \
