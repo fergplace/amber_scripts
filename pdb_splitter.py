@@ -160,7 +160,15 @@ def mmpbsa_in()->list:
     
     # use line.startswith(records): for case structure
     """
-     
+    """
+    removed this for testing 
+    /
+&pb
+  istrng=0.100
+    
+    
+    
+    """
     mmpbsa_in_data = [
 """
 sample input file for running alanine scanning
@@ -170,9 +178,7 @@ sample input file for running alanine scanning
 /
 &gb
   igb=66, saltcon=0.1
-/
-&pb
-  istrng=0.100
+
 /
 &alanine_scanning
 /
@@ -297,8 +303,10 @@ def general_method(input_dict, pdbfh, pdbfh_base_name, mutation) :
             for line in tleap_mut_in : 
                 tleap.write(f"{line}\n")
             tleap.close()
-        
-    
+        os.system(f"dos2unix tleap_mut.in") #not sure if needed. 
+        tleap_file_name ="tleap_mut.in"
+    else : 
+        tleap_file_name =input_dict["LEAP.IN_PATH" ]
     #####################################################################################
     ############################### MMPBSA sh file gen ##################################
     #####################################################################################
@@ -310,7 +318,9 @@ def general_method(input_dict, pdbfh, pdbfh_base_name, mutation) :
             for line in mut_bash_file : 
                 mut_bash_sh.write(f"{line}\n")
             mut_bash_sh.close()
-    
+            run_MMPBSA_sh_name = "run_MMPBSA.sh"
+    else :
+        run_MMPBSA_sh_name = input_dict["MMPBSA.SH_PATH"]
     
     #####################################################################################
     ################################ MMPBSA in file gen #################################
@@ -323,48 +333,27 @@ def general_method(input_dict, pdbfh, pdbfh_base_name, mutation) :
                 mmpbsa.write(f"{line}")
             mmpbsa.close()
     
-    
-    
-
-    #convert to tleap to unix to be safe
-    os.system(f"dos2unix tleap_mut.in")
     #run tleap to get solvated files
-    os.system(f"tleap -s -f tleap_mut.in > tleap_mut.out")
+    os.system(f"tleap -s -f {tleap_file_name} > tleap_mut.out")
     ##TODO: finish the MMPBSA call, just need to have a source for the intial 
     #MMPBSA files, then the .sh should be fine. 
-    os.system(f"sbatch run_MMPBSA.sh")
+    os.system(f"sbatch {run_MMPBSA_sh_name}")
     
     return 
 
 
 def main():
     
-    
     inputs = sys.argv[1:]
     in_file = inputs[0]
     input_dict = input_args_check(in_file)
     
-    
     pdbfh = input_dict["WILD_TYPE"]
     pdbfh_base_name = os.path.basename(pdbfh).split(".")[0] #getting the base name 
-    
-    #TODO loop over mutations
-    
+
     for i in range(len(input_dict["MUTATIONS"])) : 
         mutation = input_dict["MUTATIONS"][i]
         general_method(input_dict, pdbfh, pdbfh_base_name, mutation)
-    
-    
-    
-    
-    
-    
-    # inputs = sys.argv[1:]
-    # pdbfh = inputs[0]
-    
-    
-    # pdbfh_base_name = pdbfh.split(".")[0]
-    # name_from_char, idx, name_to_char = inputs[1].split(":")
     
     
     
