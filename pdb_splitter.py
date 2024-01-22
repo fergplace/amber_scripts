@@ -71,7 +71,7 @@ def mutations(pdb_data, name_from, name_to, idx) -> list:
     
     for line in pdb_data:
         if line.startswith(records):
-            if (line[17:20].strip() in name_from) and (line[22:26].strip() in idx):
+            if (line[17:20].strip() in name_from) and (line[22:26].strip() == idx):
                 #add cases here for longer ones... 
                 if counter <= 4 : #count for ALA:  
                     new_line= line[:17] + name_to.rjust(3) + line[20:]
