@@ -347,7 +347,7 @@ def main():
     in_file = inputs[0]
     input_dict = input_args_check(in_file)
     
-    pdbfh = input_dict["WILD_TYPE"]
+    pdbfh = input_dict["WILD_TYPE"][0]
     pdbfh_base_name = os.path.basename(pdbfh).split(".")[0] #getting the base name 
 
     ##TODO if mutations iterable then allow for iterable MMPBSA.sh file, user can generate them
