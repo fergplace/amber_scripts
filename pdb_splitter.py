@@ -187,7 +187,7 @@ sample input file for running alanine scanning
 """]
     return mmpbsa_in_data
 
-
+##TODO remove this 
 def input_args_from_text( file_handle ) -> list :
     """
     #TODO: will want to be able to read inputs based on flags from input file
@@ -340,6 +340,8 @@ def general_method(input_dict, pdbfh, pdbfh_base_name, mutation) :
     ##TODO: finish the MMPBSA call, just need to have a source for the intial 
     #MMPBSA files, then the .sh should be fine. 
     os.system(f"sbatch {run_MMPBSA_sh_name}")
+    #return to parent dir. 
+    os.chdir("..")
     return 
 
 
