@@ -4,11 +4,13 @@ import subprocess
 
 def input_args_check( input_arg_path) -> dict :
     cwd = os.getcwd()
-    input_fields={"WILD_TYPE": 0, 
-                "MUTATIONS":0,
+    input_fields={"WILD_TYPE": [], 
+                "MUTATIONS":[],
                 "*MDCRD_DIRECTORY": cwd, 
-                "LEAP.IN_PATH" : 0, 
-                "MMPBSA.IN_PATH": 0 }
+                "LEAP.IN_PATH" : [], 
+                "MMPBSA.IN_PATH": [],
+                "MMPBSA.SH_PATH": []
+                }
 
     with open("tmp_input_file.txt", "r") as input_file:
             for line in input_file:
