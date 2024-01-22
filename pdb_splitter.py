@@ -338,7 +338,6 @@ def general_method(input_dict, pdbfh, pdbfh_base_name, mutation) :
     ##TODO: finish the MMPBSA call, just need to have a source for the intial 
     #MMPBSA files, then the .sh should be fine. 
     os.system(f"sbatch {run_MMPBSA_sh_name}")
-    
     return 
 
 
@@ -351,12 +350,13 @@ def main():
     pdbfh = input_dict["WILD_TYPE"]
     pdbfh_base_name = os.path.basename(pdbfh).split(".")[0] #getting the base name 
 
+    ##TODO if mutations iterable then allow for iterable MMPBSA.sh file, user can generate them
     for i in range(len(input_dict["MUTATIONS"])) : 
         mutation = input_dict["MUTATIONS"][i]
         general_method(input_dict, pdbfh, pdbfh_base_name, mutation)
     
     
-    
+    ##TODO add creations of summary file: 
     
 if __name__ == '__main__':
     main()
