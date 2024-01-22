@@ -248,6 +248,7 @@ def general_method(input_dict, pdbfh, pdbfh_base_name, mutation) :
     #pdbfh_base_name = pdbfh_base_name_in_dir
     os.chdir(dir_name_path) #note the change back use chdir("..")
     
+    ##TODO make into smaller functions 
     #####################################################################################
     ############################## splitting and mutations ##############################
     #####################################################################################
@@ -287,30 +288,44 @@ def general_method(input_dict, pdbfh, pdbfh_base_name, mutation) :
     #####################################################################################
     #################################### tleap gen ######################################
     #####################################################################################
-    tleap_mut_in = tleap_gen(pdbfh_base_name, file_handle_mut_base)
-    #tleap_name = dir_name_path_full +"tleap_mut.in"
-    #tleap_name_out = dir_name_path_full + "tleap_mut.out"
-    with open("tleap_mut.in", "w+") as tleap : 
-        for line in tleap_mut_in : 
-            tleap.write(f"{line}\n")
-        tleap.close()
+    ##TODO add options for default
+    if input_dict["LEAP.IN_PATH" ] == [] :
+        tleap_mut_in = tleap_gen(pdbfh_base_name, file_handle_mut_base)
+        #tleap_name = dir_name_path_full +"tleap_mut.in"
+        #tleap_name_out = dir_name_path_full + "tleap_mut.out"
+        with open("tleap_mut.in", "w+") as tleap : 
+            for line in tleap_mut_in : 
+                tleap.write(f"{line}\n")
+            tleap.close()
         
     
-    #sh file gen
-    mut_bash_file = mut_bash(pdbfh_base_name, file_handle_mut_base, cwd)
-    #run_MMPBSA_name = dir_name_path_full + "run_MMPBSA.sh"
-    with open("run_MMPBSA.sh", "w+") as mut_bash_sh : 
-        for line in mut_bash_file : 
-            mut_bash_sh.write(f"{line}\n")
-        mut_bash_sh.close()
-    
-    mmpbsa_in_list = mmpbsa_in()
-    with open("mmpbsa.in", "w+") as mmpbsa:
-        for line in mmpbsa_in_list :
-            mmpbsa.write(f"{line}")
-        mmpbsa.close()
+    #####################################################################################
+    ############################### MMPBSA sh file gen ##################################
+    #####################################################################################
+    ##TODO add options for default 
+    if input_dict["MMPBSA.SH_PATH"] == []:
+        mut_bash_file = mut_bash(pdbfh_base_name, file_handle_mut_base, cwd)
+        #run_MMPBSA_name = dir_name_path_full + "run_MMPBSA.sh"
+        with open("run_MMPBSA.sh", "w+") as mut_bash_sh : 
+            for line in mut_bash_file : 
+                mut_bash_sh.write(f"{line}\n")
+            mut_bash_sh.close()
     
     
+    #####################################################################################
+    ################################ MMPBSA in file gen #################################
+    #####################################################################################
+    ##TODO add options 
+    if input_dict["MMPBSA.IN_PATH"] == []:
+        mmpbsa_in_list = mmpbsa_in()
+        with open("mmpbsa.in", "w+") as mmpbsa:
+            for line in mmpbsa_in_list :
+                mmpbsa.write(f"{line}")
+            mmpbsa.close()
+    
+    
+    
+
     #convert to tleap to unix to be safe
     os.system(f"dos2unix tleap_mut.in")
     #run tleap to get solvated files
