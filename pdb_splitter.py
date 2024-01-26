@@ -4,6 +4,21 @@ import subprocess
 
 def input_args_check( input_arg_path) -> dict :
     cwd = os.getcwd()
+
+
+    #TODO add new inputs 
+    '''
+    want option for default names, and dynamic naming: 
+        -require dynamic naming if not provided all in paths
+
+    wnat to have inputs for the leap.in fatures
+    want mmbpsa input opitons (include step stuff) :
+        inputs: 
+        start_frame :
+        end_frame
+        interval : 
+
+    '''
     input_fields={"WILD_TYPE": [], 
                 "MUTATIONS":[],
                 "*MDCRD_DIRECTORY": cwd, 
@@ -92,6 +107,7 @@ def tleap_gen(pdbfh_base_name,file_handle_mut_all ) -> list:
     returns             : tleap file as a list 
     
     #TODO: add inputs for radii, leaprc, TIP3PBOX
+    #TODO : rename from _cov to ligand
     '''
     #standard leap.in for mut files 
     #TODO add options for radii, box, FF
@@ -119,6 +135,9 @@ def mut_bash( pdbfh_base_name, file_handle_mut_all, cwd) :
     file_handle_mut_all : base bame of the mutated file 
     cwd                 : cwd where script was called, this is parent dir afer chdir call
     returns             : .sh file as a list 
+
+    TODO: consider using input for nodes, making use of queue on nodes to not take up all of the cluster
+
     '''
     
     mut_bash_sh = [f"#!/bin/bash",
