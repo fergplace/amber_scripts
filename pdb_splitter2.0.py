@@ -72,7 +72,7 @@ def split_and_mut(pdbfh,pdbfh_base_name, name_from, name_to, idx, naming_conv) :
         pdb_file.close()
 
 
-def tleap_gen( input_dict,  pdbfh_base_name, file_handle_mut_base ): 
+def tleap_in_gen( input_dict,  pdbfh_base_name, file_handle_mut_base ): 
     if input_dict["LEAP.IN_PATH" ] == [] :
         tleap_mut_in = tleap_gen(pdbfh_base_name, file_handle_mut_base)
         with open("tleap_mut.in", "w+") as tleap : 
@@ -296,7 +296,7 @@ def input_args_from_text( file_handle ) -> list :
         
     return input_arg_list 
  
-def general_method(input_dict, pdbfh, pdbfh_base_name, mutation, mmbpsa_path) : 
+def general_method(input_dict, pdbfh, pdbfh_base_name, mutation) : 
     """
     general process: 
     input_dict: from input_args_check
@@ -354,9 +354,9 @@ def general_method(input_dict, pdbfh, pdbfh_base_name, mutation, mmbpsa_path) :
     #################################### tleap gen ######################################
     #####################################################################################
     ##TODO add options for default
-    tleap_file_name = tleap_gen( input_dict,  
-                                pdbfh_base_name, 
-                                file_handle_mut_base )
+    tleap_file_name = tleap_in_gen( input_dict,
+                                    pdbfh_base_name, 
+                                    file_handle_mut_base,)
     
     #####################################################################################
     ############################### MMPBSA sh file gen ##################################
