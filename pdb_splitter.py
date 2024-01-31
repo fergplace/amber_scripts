@@ -82,7 +82,7 @@ def mutations(pdb_data, name_from, name_to, idx) -> list:
     '''
     counter = 0 
     records = ('ATOM', 'HETATM', 'TER', 'ANISOU')
-    mutated_cov = [] 
+    mutated_ligand = [] 
     
     for line in pdb_data:
         if line.startswith(records):
@@ -90,14 +90,14 @@ def mutations(pdb_data, name_from, name_to, idx) -> list:
                 #add cases here for longer ones... 
                 if counter <= 4 : #count for ALA:  
                     new_line= line[:17] + name_to.rjust(3) + line[20:]
-                    mutated_cov.append(new_line)
+                    mutated_ligand.append(new_line)
                     counter = counter + 1 
                     continue
                 else :
                     continue
-        mutated_cov.append(line)
+        mutated_ligand.append(line)
 
-    return mutated_cov
+    return mutated_ligand
 
 
 def tleap_gen(pdbfh_base_name,file_handle_mut_all ) -> list:
@@ -115,17 +115,17 @@ def tleap_gen(pdbfh_base_name,file_handle_mut_all ) -> list:
         f"source leaprc.water.tip3p",
         f"set default PBRadii mbondi2\n",
         f"com = loadpdb {pdbfh_base_name}.pdb"  ,
-        f"cov = loadpdb {pdbfh_base_name}_cov.pdb" ,
+        f"ligand = loadpdb {pdbfh_base_name}_ligand.pdb" ,
         f"rcp = loadpdb {pdbfh_base_name}_recpt.pdb\n",
         f"saveamberparm com {pdbfh_base_name}.prmtop {pdbfh_base_name}.inpcrd",
-        f"saveamberparm cov {pdbfh_base_name}_cov.prmtop {pdbfh_base_name}_cov.inpcrd",
+        f"saveamberparm ligand {pdbfh_base_name}_ligand.prmtop {pdbfh_base_name}_ligand.inpcrd",
         f"saveamberparm rcp {pdbfh_base_name}_recpt.prmtop {pdbfh_base_name}_recpt.inpcrd",
         f"solvatebox com TIP3PBOX 12.0",
         f"saveamberparm com {pdbfh_base_name}_solvated.prmtop {pdbfh_base_name}_solvated.inpcrd\n",
         f"com_mut = loadpdb {file_handle_mut_all}.pdb",
-        f"cov_mut = loadpdb {file_handle_mut_all}_cov.pdb\n",
+        f"ligand_mut = loadpdb {file_handle_mut_all}_ligand.pdb\n",
         f"saveamberparm com_mut {file_handle_mut_all}.prmtop {file_handle_mut_all}.inpcrd",
-        f"saveamberparm cov_mut {file_handle_mut_all}_cov.prmtop {file_handle_mut_all}_cov.inpcrd",
+        f"saveamberparm ligand_mut {file_handle_mut_all}_ligand.prmtop {file_handle_mut_all}_ligand.inpcrd",
         f"quit"]
     return tleap_wild_in
 
@@ -137,7 +137,7 @@ def mut_bash( pdbfh_base_name, file_handle_mut_all, cwd) :
     returns             : .sh file as a list 
 
     TODO: consider using input for nodes, making use of queue on nodes to not take up all of the cluster
-
+    TODO change mmpbsa.in into path to mmbpsa file : 
     '''
     
     mut_bash_sh = [f"#!/bin/bash",
@@ -155,10 +155,10 @@ FINAL_RESULTS_MMPBSA_tleap_{file_handle_mut_all}.dat\
  -sp {pdbfh_base_name}_solvated.prmtop\
  -cp {pdbfh_base_name}.prmtop\
  -rp {pdbfh_base_name}_recpt.prmtop\
- -lp {pdbfh_base_name}_cov.prmtop\
+ -lp {pdbfh_base_name}_ligand.prmtop\
  -y {cwd}/*.mdcrd\
  -mc {file_handle_mut_all}.prmtop\
- -ml {file_handle_mut_all}_cov.prmtop"""
+ -ml {file_handle_mut_all}_ligand.prmtop"""
         ]
     return mut_bash_sh
 
@@ -232,10 +232,6 @@ def general_method(input_dict, pdbfh, pdbfh_base_name, mutation) :
     input_dict: from input_args_check
     mut_num : range(len(input_dict["MUTATIONS"]))
     """
-    ##TODO, maybe bring this ourside, dont need to do it more than once... 
-    #could just pass mutation 
-    # pdbfh = input_dict["WILD_TYPE"]
-    #pdbfh_base_name = os.path.basename(pdbfh).split(".")[0] #getting the base name 
     
     name_from_char, idx, name_to_char = mutation.split(":")
     #dict for char to code conversion 
@@ -263,12 +259,10 @@ def general_method(input_dict, pdbfh, pdbfh_base_name, mutation) :
     #path for other files
     os.system(f"mkdir {dir_name_path}")
     
-    
     dir_name_path_full = dir_name_path + "/"
     #new name for pdb in the dir
     pdbfh_in_dir = dir_name_path_full + pdbfh
-    #TODO: dont need this, can remove later
-    pdbfh_base_name_in_dir = dir_name_path_full + pdbfh_base_name
+    
     #copy the base pdb into new dir
     os.system(f"cp {pdbfh} {pdbfh_in_dir}")
     #update base name to the file in subdir
@@ -276,6 +270,7 @@ def general_method(input_dict, pdbfh, pdbfh_base_name, mutation) :
     os.chdir(dir_name_path) #note the change back use chdir("..")
     
     ##TODO make into smaller functions 
+    
     #####################################################################################
     ############################## splitting and mutations ##############################
     #####################################################################################
@@ -289,17 +284,17 @@ def general_method(input_dict, pdbfh, pdbfh_base_name, mutation) :
         for line in struct_pdb_data : 
             pdb_file.write(f"{line}")
         pdb_file.close()
-    cov_pdb = pdb_split(pdb_data, 1 )
-    file_handle_covid = pdbfh_base_name + "_cov.pdb"
-    with open(file_handle_covid, "w+") as pdb_file : 
-        for line in cov_pdb : 
+    ligand_pdb = pdb_split(pdb_data, 1 )
+    file_handle_ligand = pdbfh_base_name + "_ligand.pdb"
+    with open(file_handle_ligand, "w+") as pdb_file : 
+        for line in ligand_pdb : 
             pdb_file.write(f"{line}")
         pdb_file.close()
     #mutations:
-    #cov_mutation
-    mutation_pdb_data = mutations(cov_pdb, name_from, name_to, idx)
+    #ligand_mutation
+    mutation_pdb_data = mutations(ligand_pdb, name_from, name_to, idx)
     file_handle_mut_base = pdbfh_base_name +"_" + naming_conv
-    file_handle_mut = file_handle_mut_base + "_cov.pdb"
+    file_handle_mut = file_handle_mut_base + "_ligand.pdb"
     with open(file_handle_mut, "w+") as pdb_file : 
         for line in mutation_pdb_data : 
             pdb_file.write(f"{line}")
@@ -346,7 +341,7 @@ def general_method(input_dict, pdbfh, pdbfh_base_name, mutation) :
     #####################################################################################
     ################################ MMPBSA in file gen #################################
     #####################################################################################
-    ##TODO add options 
+    ##TODO add options(dont just bring out of loop...)
     if input_dict["MMPBSA.IN_PATH"] == []:
         mmpbsa_in_list = mmpbsa_in()
         with open("mmpbsa.in", "w+") as mmpbsa:

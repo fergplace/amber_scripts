@@ -28,11 +28,11 @@ def input_args_check( input_arg_path) -> dict :
                 }
 
     with open("tmp_input_file.txt", "r") as input_file:
-            for line in input_file:
-                    if line.startswith("#input"):
-                            tmp_key = line.split() #split
-                            if tmp_key[2:] != [] : #check for null input 
-                                    input_fields[tmp_key[1]] = tmp_key[2:] #for args of len >1 e.g. MUTATIONS
+        for line in input_file:
+            if line.startswith("#input"):
+                tmp_key = line.split() #split
+                if tmp_key[2:] != [] : #check for null input 
+                    input_fields[tmp_key[1]] = tmp_key[2:] #for args of len >1 e.g. MUTATIONS
     
     
     ##TODO error without an input pdb and a mutation 
@@ -116,7 +116,7 @@ def pdb_split(pdb_data, option) -> list:
     returns     : split as a list 
     '''
     #ignore HET and other line starts: 
-    #NOTE: no need to use the no_HET srouce files, this will strip the files of the HET
+    #NOTE: no need to use the no_HET source files, this will strip the files of the HET
     ter_state = 0 
     records = ('ATOM', 'ANISOU', 'TER')
     data = []
@@ -154,10 +154,13 @@ def mutations(pdb_data, name_from, name_to, idx) -> list:
     
     for line in pdb_data:
         if line.startswith(records):
+            
+            
             if (line[17:20].strip() in name_from) and (line[22:26].strip() == idx):
                 #add cases here for longer ones... 
-                if counter <= 4 : #count for ALA:  
-                    new_line= line[:17] + name_to.rjust(3) + line[20:]
+                #add case for GLN which has AGLN and BGLN
+                if (counter <= 4) and (line[16] == "A" or line[16]== " ") : #count for ALA:  
+                    new_line= line[:16] + name_to.rjust(4) + line[20:]
                     mutated_ligand.append(new_line)
                     counter = counter + 1 
                     continue
