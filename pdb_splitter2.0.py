@@ -38,7 +38,7 @@ def input_args_check( input_arg_path) -> dict :
     ##TODO error without an input pdb and a mutation 
     return input_fields
 
-def split_and_mut(pdbfh,pdbfh_base_name, name_from, name_to, idx, naming_conv) :
+def split_and_mut(pdbfh, pdbfh_base_name, name_from, name_to, idx, naming_conv) :
     with open(pdbfh, "r") as f :
         pdb_data = f.readlines()
     #splits
@@ -70,7 +70,7 @@ def split_and_mut(pdbfh,pdbfh_base_name, name_from, name_to, idx, naming_conv) :
         for line in mutation_pdb_data_all : 
             pdb_file.write(f"{line}")
         pdb_file.close()
-
+    return  file_handle_mut_base
 
 def tleap_in_gen( input_dict,  pdbfh_base_name, file_handle_mut_base ): 
     if input_dict["LEAP.IN_PATH" ] == [] :
@@ -99,7 +99,7 @@ def mmbpsa_sh_gen(input_dict , pdbfh_base_name , file_handle_mut_base, cwd):
         run_MMPBSA_sh_name = input_dict["MMPBSA.SH_PATH"]
     return run_MMPBSA_sh_name
 
-def mmbpsa_in_gen(input_dict, ) : 
+def mmbpsa_in_gen(input_dict ) : 
     if input_dict["MMPBSA.IN_PATH"] == []:
         mmpbsa_in_list = mmpbsa_in()
         with open("mmpbsa.in", "w+") as mmpbsa:
