@@ -178,10 +178,12 @@ def tleap_gen(pdbfh_base_name,file_handle_mut_all ) -> list:
     returns             : tleap file as a list 
     
     #TODO: add inputs for radii, leaprc, TIP3PBOX
-    #TODO : rename from _cov to ligand
+    
     '''
     #standard leap.in for mut files 
     #TODO add options for radii, box, FF
+    #TODO try modern FF, 19SB ; 
+    #OPC and FF19SB protein.leaprc.ff19SB
     tleap_wild_in = [f"source oldff/leaprc.ff99",
         f"source leaprc.water.tip3p",
         f"set default PBRadii mbondi2\n",
@@ -392,7 +394,6 @@ def main():
     #####################################################################################
     ################################ MMPBSA in file gen #################################
     #####################################################################################
-    ##TODO add options(dont just bring out of loop...)
     mmbpsa_in_gen(input_dict )
 
     ##TODO if mutations iterable then allow for iterable MMPBSA.sh file, user can generate them
