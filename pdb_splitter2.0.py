@@ -184,8 +184,9 @@ def tleap_gen(pdbfh_base_name,file_handle_mut_all ) -> list:
     #TODO add options for radii, box, FF
     #TODO try modern FF, 19SB ; 
     #OPC and FF19SB protein.leaprc.ff19SB
-    tleap_wild_in = [f"source oldff/leaprc.ff99",
-        f"source leaprc.water.tip3p",
+    #leaprc.protein.ff19SB  
+    tleap_wild_in = [f"source leaprc.protein.ff19SB",
+        f"source leaprc.water.opc",
         f"set default PBRadii mbondi2\n",
         f"com = loadpdb {pdbfh_base_name}.pdb"  ,
         f"ligand = loadpdb {pdbfh_base_name}_ligand.pdb" ,
