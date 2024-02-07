@@ -315,7 +315,7 @@ def general_method(input_dict, pdbfh, pdbfh_base_name, mutation) :
     name_from_char, idx, name_to_char = mutation.split(":")
     #dict for char to code conversion 
     amino_acid_dict = {"A": "ALA", "V": "VAL", \
-                    "I":"LLE", "L":"LEU", "M":"MET", \
+                    "I":"ILE", "L":"LEU", "M":"MET", \
                     "F":"PHE", "Y":"TYR", "W":"TRP" , \
                     "S":"SER", "T":"THR", "N":"ASN", \
                     "Q":"GLN", "C":"CYS","U":"SEC", \
