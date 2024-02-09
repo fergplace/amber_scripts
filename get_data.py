@@ -17,8 +17,7 @@ def main()   :
     for file_name in tmp_file_names:
         with open(file_name) as f :
             data = f.readlines()
-            tmp_str = file_name.base()
-            mutations.append(tmp_str.split("_")[-1].split(".")[0])
+            mutations.append(file_name.split("_")[-1].split(".")[0])
             c = 0
             for line in data : 
                 if "RESULT OF ALANINE SCANNING" in line :
