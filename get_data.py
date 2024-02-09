@@ -17,11 +17,13 @@ def main()   :
     for file_name in tmp_file_names:
         with open(file_name) as f :
             data = f.readlines()
+            tmp_str = file_name.base()
+            mutations.append(tmp_str.split("_")[-1].split(".")[0])
             c = 0
             for line in data : 
                 if "RESULT OF ALANINE SCANNING" in line :
                     if c == 0 :
-                        mutations.append(line.split(":")[1].split()[0].replace("(" , "").replace(")", ""))
+                        
                         delta_delta_g_gen.append(\
                             line.split("=")[1].split("+/-")[0].strip()
                             )
