@@ -2,16 +2,18 @@
 
 import glob
 
+import pandas as pd
+
 def main()   :
+    print("working")
     mutations = [] 
     delta_delta_g_gen = [] 
     delta_delta_g_gen_error = []
     delta_delta_g_gen_66 = [] 
     delta_delta_g_gen_66_error = []
 
-    tmp_file_loc = "/*_dir/FINAL_RESULTS*"
+    tmp_file_loc = "*_dir/FINAL_RESULTS*"
     tmp_file_names = glob.glob(tmp_file_loc)
-
     for file_name in tmp_file_names:
         with open(file_name) as f :
             data = f.readlines()
@@ -35,15 +37,16 @@ def main()   :
                             line.split("=")[1].split("+/-")[1].strip()
                             )
 
-    
-    for i in len(tmp_file_names) :
-        print(mutations[i] )
-        print(delta_delta_g_gen[i] )
-        print(delta_delta_g_gen_error[i] )
-        print(delta_delta_g_gen_66[i] )
-        print(delta_delta_g_gen_66_error[i] )
-    
-    
+
+
+    data= {"mutations" :mutations, "delta_delta_g_gen" :delta_delta_g_gen, 
+        "delta_delta_g_gen_error" : delta_delta_g_gen_error, 
+        "delta_delta_g_gen_66" : delta_delta_g_gen_66,
+        "delta_delta_g_gen_66_error" :delta_delta_g_gen_66_error
+        }
+  
+    df_data = pd.DataFrame.from_dict(data)
+    df_data.to_csv("simple_amino.csv")
 
 if __name__ == '__main__':
     main()
