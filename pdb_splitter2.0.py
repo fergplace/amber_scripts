@@ -223,7 +223,7 @@ def mut_bash( pdbfh_base_name, file_handle_mut_all, cwd) :
         f"#SBATCH --partition=cpu",
         f"#SBATCH --ntasks=4",
         f"#SBATCH --cpus-per-task=1",
-        f"#SBATCH --mem=8000",
+        f"#SBATCH --mem=14000",
         f"#SBATCH --output=run_mmpbsa_66.out",
         f"#SBATCH --error=run_mmpbsa_66.error",
         f"#SBATCH --time=72:00:00",
@@ -233,7 +233,7 @@ def mut_bash( pdbfh_base_name, file_handle_mut_all, cwd) :
         f"",
         f"tleap -s -f tleap_mut.in > tleap_mut.out"
         f"",
-        f"""mpirun -np 4 $AMBERHOME/bin/MMPBSA.py -O -i \
+        f"""mpirun -np 4 $AMBERHOME/bin/MMPBSA.py.MPI -O -i \
 {cwd}/mmpbsa.in -o \
 FINAL_RESULTS_MMPBSA_tleap_{file_handle_mut_all}.dat\
  -sp {pdbfh_base_name}_solvated.prmtop\
