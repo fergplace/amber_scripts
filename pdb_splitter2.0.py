@@ -221,8 +221,9 @@ def mut_bash( pdbfh_base_name, file_handle_mut_all, cwd) :
     mut_bash_sh = [f"#!/bin/bash",
         f"#SBATCH --job-name=run_66_mut",
         f"#SBATCH --partition=cpu",
-        f"#SBATCH --ntasks=1",
-        f"#SBATCH --cpus-per-task=12",
+        f"#SBATCH --ntasks=4",
+        f"#SBATCH --cpus-per-task=1",
+        f"#SBATCH --mem=8000"
         f"#SBATCH --output=run_mmpbsa_66.out",
         f"#SBATCH --error=run_mmpbsa_66.error",
         f"#SBATCH --time=72:00:00",
@@ -230,7 +231,7 @@ def mut_bash( pdbfh_base_name, file_handle_mut_all, cwd) :
         f"module load amber " ,
         f"source /opt/calstatela/amber-22/amber22/amber.sh",
         f"""$AMBERHOME/bin/MMPBSA.py -O -i \
-{cwd}/mmpbsa.in -o \
+{cwd}/mpirun -np 4 mmpbsa.in -o \
 FINAL_RESULTS_MMPBSA_tleap_{file_handle_mut_all}.dat\
  -sp {pdbfh_base_name}_solvated.prmtop\
  -cp {pdbfh_base_name}.prmtop\
@@ -267,15 +268,16 @@ def mmpbsa_in()->list:
 &pb
   istrng=0.100
     
-    
+    #changed startfram =1; and interval=2 ; removed end frame 
+    keep_files=0; don't want tmp files. 
     
     """
     mmpbsa_in_data = [
 """
 sample input file for running alanine scanning
  &general
-   startframe=1, endframe=200, interval=1,
-   verbose=1, 
+   startframe=1, interval=2,
+   verbose=1, keep_files=0
 /
 &gb
   igb=66, saltcon=0.1
@@ -379,7 +381,7 @@ def general_method(input_dict, pdbfh, pdbfh_base_name, mutation) :
     #####################################################################################
     ############################## Running tleap + MMBPSA ###############################
     #####################################################################################
-    #run tleap to get solvated files
+    #run tleap to get solvated files, TODO: put into sbatch
     os.system(f"tleap -s -f {tleap_file_name} > tleap_mut.out")
     ##TODO: finish the MMPBSA call, just need to have a source for the intial 
     #MMPBSA files, then the .sh should be fine. 
