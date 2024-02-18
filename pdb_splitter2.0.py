@@ -223,7 +223,7 @@ def mut_bash( pdbfh_base_name, file_handle_mut_all, cwd) :
         f"#SBATCH --partition=cpu",
         f"#SBATCH --ntasks=4",
         f"#SBATCH --cpus-per-task=1",
-        f"#SBATCH --mem=14000",
+        f"#SBATCH --mem=10000",
         f"#SBATCH --output=run_mmpbsa_66.out",
         f"#SBATCH --error=run_mmpbsa_66.error",
         f"#SBATCH --time=72:00:00",
@@ -271,16 +271,15 @@ def mmpbsa_in()->list:
 &pb
   istrng=0.100
     
-    #changed startfram =1; and interval=2 ; removed end frame 
-    keep_files=0; don't want tmp files. 
+    #changed startframe to 50, and interval to 5, for 200 frames. 
     
     """
     mmpbsa_in_data = [
 """
 sample input file for running alanine scanning
  &general
-   startframe=1, interval=2,
-   verbose=1, keep_files=0
+   startframe=50, endframe=1050, interval=5, 
+   verbose=1, keep_files=2
 /
 &gb
   igb=66, saltcon=0.1
@@ -388,7 +387,9 @@ def general_method(input_dict, pdbfh, pdbfh_base_name, mutation) :
     #os.system(f"tleap -s -f {tleap_file_name} > tleap_mut.out")
     ##TODO: finish the MMPBSA call, just need to have a source for the intial 
     #MMPBSA files, then the .sh should be fine. 
-    #os.system(f"sbatch {run_MMPBSA_sh_name}")
+    #TODO: fix tleap._file_name as input, doesn't really matter as we don't 
+    #dynamically name anyway. 
+    os.system(f"sbatch {run_MMPBSA_sh_name}")
     #return to parent dir. 
     os.chdir("..")
     return 
