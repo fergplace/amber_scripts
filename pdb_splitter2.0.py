@@ -223,7 +223,7 @@ def mut_bash( pdbfh_base_name, file_handle_mut_all, cwd) :
         f"#SBATCH --partition=cpu",
         f"#SBATCH --ntasks=4",
         f"#SBATCH --cpus-per-task=1",
-        f"#SBATCH --mem=8000"
+        f"#SBATCH --mem=8000",
         f"#SBATCH --output=run_mmpbsa_66.out",
         f"#SBATCH --error=run_mmpbsa_66.error",
         f"#SBATCH --time=72:00:00",
