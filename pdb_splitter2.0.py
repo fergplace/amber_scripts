@@ -230,8 +230,11 @@ def mut_bash( pdbfh_base_name, file_handle_mut_all, cwd) :
         f'''echo "Loading modules..."'''  ,  
         f"module load amber " ,
         f"source /opt/calstatela/amber-22/amber22/amber.sh",
-        f"""$AMBERHOME/bin/MMPBSA.py -O -i \
-{cwd}/mpirun -np 4 mmpbsa.in -o \
+        f"",
+        f"tleap -s -f tleap_mut.in > tleap_mut.out"
+        f"",
+        f"""mpirun -np 4 $AMBERHOME/bin/MMPBSA.py -O -i \
+{cwd}/mmpbsa.in -o \
 FINAL_RESULTS_MMPBSA_tleap_{file_handle_mut_all}.dat\
  -sp {pdbfh_base_name}_solvated.prmtop\
  -cp {pdbfh_base_name}.prmtop\
@@ -382,10 +385,10 @@ def general_method(input_dict, pdbfh, pdbfh_base_name, mutation) :
     ############################## Running tleap + MMBPSA ###############################
     #####################################################################################
     #run tleap to get solvated files, TODO: put into sbatch
-    os.system(f"tleap -s -f {tleap_file_name} > tleap_mut.out")
+    #os.system(f"tleap -s -f {tleap_file_name} > tleap_mut.out")
     ##TODO: finish the MMPBSA call, just need to have a source for the intial 
     #MMPBSA files, then the .sh should be fine. 
-    os.system(f"sbatch {run_MMPBSA_sh_name}")
+    #os.system(f"sbatch {run_MMPBSA_sh_name}")
     #return to parent dir. 
     os.chdir("..")
     return 
