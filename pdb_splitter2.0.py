@@ -278,7 +278,7 @@ def mmpbsa_in()->list:
 """
 sample input file for running alanine scanning
  &general
-   startframe=50, endframe=1050, interval=5, 
+   startframe=50, endframe=450, interval=2, 
    verbose=1, keep_files=2
 /
 &gb
