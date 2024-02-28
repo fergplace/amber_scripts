@@ -2,7 +2,7 @@
 
 from parmed.amber import AmberParm
 import sys
-
+import os 
 def opt_radii(topology):
     '''
     This function is used to update atom radius based on opt standard
@@ -35,10 +35,10 @@ def opt_radii(topology):
         else:
             parm.atoms[i].screen = 0.8
 
-    new_topology = topology.split('.')[-2]
-    new_name = new_topology + '_opt_radii'
+    os.remove(topology)
 
-    parm.write_parm(topology.replace(new_topology, new_name))
+
+    parm.write_parm(topology)
 
 if __name__ == '__main__':
     topology = sys.argv[1]
