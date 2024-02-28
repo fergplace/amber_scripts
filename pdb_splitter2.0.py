@@ -193,8 +193,11 @@ def tleap_gen(pdbfh_base_name,file_handle_mut_all ) -> list:
         f"source leaprc.water.opc",
         f"set default PBRadii mbondi2\n",
         f"com = loadpdb {pdbfh_base_name}.pdb"  ,
+        f"addIon com Na+ 0" , 
         f"ligand = loadpdb {pdbfh_base_name}_ligand.pdb" ,
+        f"addIon ligand Cl- 0",
         f"rcp = loadpdb {pdbfh_base_name}_recpt.pdb\n",
+        f"addIon rcp Na+ 0",
         f"saveamberparm com {pdbfh_base_name}.prmtop {pdbfh_base_name}.inpcrd",
         f"saveamberparm ligand {pdbfh_base_name}_ligand.prmtop {pdbfh_base_name}_ligand.inpcrd",
         f"saveamberparm rcp {pdbfh_base_name}_recpt.prmtop {pdbfh_base_name}_recpt.inpcrd",
@@ -233,7 +236,14 @@ def mut_bash( pdbfh_base_name, file_handle_mut_all, cwd) :
         f"",
         f"tleap -s -f tleap_mut.in > tleap_mut.out"
         f"",
-        f"""mpirun -np 4 $AMBERHOME/bin/MMPBSA.py.MPI -O -i \
+        f"{cwd}/change_radii_to_opt.py {pdbfh_base_name}_solvated.prmtop",
+        f"{cwd}/change_radii_to_opt.py {pdbfh_base_name}.prmtop",
+        f"{cwd}/change_radii_to_opt.py {pdbfh_base_name}_ligand.prmtop",
+        f"{cwd}/change_radii_to_opt.py {file_handle_mut_all}.prmtop", 
+        f"{cwd}/change_radii_to_opt.py {file_handle_mut_all}_ligand.prmtop",
+        f"{cwd}/change_radii_to_opt.py {pdbfh_base_name}_recpt.prmtop",
+        
+        f"""$AMBERHOME/bin/MMPBSA.py -O -i \
 {cwd}/mmpbsa.in -o \
 FINAL_RESULTS_MMPBSA_tleap_{file_handle_mut_all}.dat\
  -sp {pdbfh_base_name}_solvated.prmtop\
@@ -278,11 +288,11 @@ def mmpbsa_in()->list:
 """
 sample input file for running alanine scanning
  &general
-   startframe=50, endframe=450, interval=2, 
-   verbose=1, keep_files=2
+   startframe=1, endframe=200, interval=1, 
+   verbose=1
 /
 &gb
-  igb=66, saltcon=0.1
+  igb=66, saltcon=0.1, probe=1.37
 
 /
 &alanine_scanning
@@ -384,16 +394,59 @@ def general_method(input_dict, pdbfh, pdbfh_base_name, mutation) :
     ############################## Running tleap + MMBPSA ###############################
     #####################################################################################
     #run tleap to get solvated files, TODO: put into sbatch
+    
     #os.system(f"tleap -s -f {tleap_file_name} > tleap_mut.out")
+    
+    
     ##TODO: finish the MMPBSA call, just need to have a source for the intial 
     #MMPBSA files, then the .sh should be fine. 
     #TODO: fix tleap._file_name as input, doesn't really matter as we don't 
     #dynamically name anyway. 
-    os.system(f"sbatch {run_MMPBSA_sh_name}")
+    #os.system(f"sbatch {run_MMPBSA_sh_name}")
     #return to parent dir. 
     os.chdir("..")
     return 
 
+
+
+def opt_radii(topology):
+    '''
+    This function is used to update atom radius based on opt standard
+    :param topology: path to the topology file
+    :return: replace the topology file with the new one
+    '''
+    parm = AmberParm(topology)
+    for i, atom in enumerate(parm.atoms):
+        if atom.atomic_number == 6: parm.atoms[i].solvent_radius = 1.4001	    # C
+        elif atom.atomic_number == 1: parm.atoms[i].solvent_radius = 1.5501      # H
+        elif atom.atomic_number == 7: parm.atoms[i].solvent_radius = 2.3501		# N
+        elif atom.atomic_number == 8: parm.atoms[i].solvent_radius = 1.2801		# O
+        elif atom.atomic_number == 16: parm.atoms[i].solvent_radius = 1.8000		# S
+
+    for i, atom in enumerate(parm.atoms):
+        if atom.atomic_number == 1:
+            parm.atoms[i].screen = 0.85
+        elif atom.atomic_number == 6:
+            parm.atoms[i].screen = 0.72
+        elif atom.atomic_number == 7:
+            parm.atoms[i].screen = 0.79
+        elif atom.atomic_number == 8:
+            parm.atoms[i].screen = 0.85
+        elif atom.atomic_number == 9:
+            parm.atoms[i].screen = 0.88
+        elif atom.atomic_number == 15:
+            parm.atoms[i].screen = 0.86
+        elif atom.atomic_number == 16:
+            parm.atoms[i].screen = 0.96
+        else:
+            parm.atoms[i].screen = 0.8
+
+    #new_topology = topology.split('.')[-2]
+    #new_name = new_topology #+ '_opt_radii'
+
+    
+    os.remove(topology)
+    parm.write_parm(topology) #.replace(new_topology, new_name))
 
 def main():
     
