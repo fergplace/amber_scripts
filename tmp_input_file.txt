@@ -1,5 +1,5 @@
 #input WILD_TYPE 6m0j_noHet.pdb
-#input MUTATIONS C:336:A
+#input MUTATIONS C:336:A F:448:A
 #input *MDCRD_DIRECTORY 
 #input LEAP.IN_PATH 
 #input MMPBSA.IN_PATH 
