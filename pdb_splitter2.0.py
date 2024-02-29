@@ -399,7 +399,7 @@ def general_method(input_dict, pdbfh, pdbfh_base_name, mutation) :
     #MMPBSA files, then the .sh should be fine. 
     #TODO: fix tleap._file_name as input, doesn't really matter as we don't 
     #dynamically name anyway. 
-    #os.system(f"sbatch {run_MMPBSA_sh_name}")
+    os.system(f"sbatch {run_MMPBSA_sh_name}")
     #return to parent dir. 
     os.chdir("..")
     return 

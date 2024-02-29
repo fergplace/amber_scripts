@@ -47,7 +47,7 @@ def main()   :
         }
   
     df_data = pd.DataFrame.from_dict(data)
-    df_data.to_csv("all_amino.csv")
+    df_data.to_csv("all_amino_with_optradii.csv")
 
 if __name__ == '__main__':
     main()
