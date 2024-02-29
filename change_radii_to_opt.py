@@ -36,8 +36,6 @@ def opt_radii(topology):
             parm.atoms[i].screen = 0.8
 
     os.remove(topology)
-
-
     parm.write_parm(topology)
 
 if __name__ == '__main__':
