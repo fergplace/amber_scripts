@@ -1,0 +1,100 @@
+<mxfile host="Electron" modified="2024-02-29T04:25:10.593Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/23.1.5 Chrome/120.0.6099.109 Electron/28.1.0 Safari/537.36" etag="hTvgO5_DAVYetZvZbLzC" version="23.1.5" type="device">
+  <diagram name="Page-1" id="l0QVNMNbbZ1KcXJm1Xm4">
+    <mxGraphModel dx="1737" dy="2498" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="L3aLT-y4SqIGTcXeWlYi-9" value="For mutations in residues to mutate:" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;" parent="1" vertex="1">
+          <mxGeometry x="-190" y="-317.5" width="220" height="395" as="geometry" />
+        </mxCell>
+        <mxCell id="L3aLT-y4SqIGTcXeWlYi-3" value="pdb file of complex&amp;nbsp;" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+          <mxGeometry x="-370" y="-257.5" width="150" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="L3aLT-y4SqIGTcXeWlYi-4" value="residues to mutate" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+          <mxGeometry x="-370" y="-192.5" width="150" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="L3aLT-y4SqIGTcXeWlYi-8" value="**args" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+          <mxGeometry x="-380" y="-127.5" width="150" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="L3aLT-y4SqIGTcXeWlYi-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="L3aLT-y4SqIGTcXeWlYi-10" target="L3aLT-y4SqIGTcXeWlYi-11" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="L3aLT-y4SqIGTcXeWlYi-10" value="split and mutate" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="-180" y="-277.5" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="L3aLT-y4SqIGTcXeWlYi-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="L3aLT-y4SqIGTcXeWlYi-11" target="L3aLT-y4SqIGTcXeWlYi-12" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="L3aLT-y4SqIGTcXeWlYi-11" value="generate tleap file" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="-180" y="-187.5" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="L3aLT-y4SqIGTcXeWlYi-19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="L3aLT-y4SqIGTcXeWlYi-12" target="L3aLT-y4SqIGTcXeWlYi-18" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="L3aLT-y4SqIGTcXeWlYi-12" value="generate bash script to run mmbsa" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="-180" y="-87.5" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="L3aLT-y4SqIGTcXeWlYi-18" value="run bash (tleap and MMPBSA)" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="-180" y="2.5" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="L3aLT-y4SqIGTcXeWlYi-22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.203;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="L3aLT-y4SqIGTcXeWlYi-3" target="L3aLT-y4SqIGTcXeWlYi-9" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="L3aLT-y4SqIGTcXeWlYi-27" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=-0.009;entryY=0.365;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="L3aLT-y4SqIGTcXeWlYi-4" target="L3aLT-y4SqIGTcXeWlYi-9" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="L3aLT-y4SqIGTcXeWlYi-29" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.532;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="L3aLT-y4SqIGTcXeWlYi-8" target="L3aLT-y4SqIGTcXeWlYi-9" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="L3aLT-y4SqIGTcXeWlYi-30" value="split and mutate" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="260" y="-30" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="L3aLT-y4SqIGTcXeWlYi-33" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="L3aLT-y4SqIGTcXeWlYi-31" target="L3aLT-y4SqIGTcXeWlYi-30" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="L3aLT-y4SqIGTcXeWlYi-31" value="pdb file of complex&amp;nbsp;" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+          <mxGeometry x="70" y="-50" width="150" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="L3aLT-y4SqIGTcXeWlYi-34" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="L3aLT-y4SqIGTcXeWlYi-32" target="L3aLT-y4SqIGTcXeWlYi-30" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="L3aLT-y4SqIGTcXeWlYi-32" value="residue" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+          <mxGeometry x="60" y="10" width="150" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="L3aLT-y4SqIGTcXeWlYi-37" value="receptor, ligand, mutated ligand&amp;nbsp;" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.multi-document;whiteSpace=wrap;align=center;" parent="1" vertex="1">
+          <mxGeometry x="410" y="-40" width="240" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="L3aLT-y4SqIGTcXeWlYi-39" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="L3aLT-y4SqIGTcXeWlYi-30" target="L3aLT-y4SqIGTcXeWlYi-37" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="L3aLT-y4SqIGTcXeWlYi-49" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="L3aLT-y4SqIGTcXeWlYi-40" target="L3aLT-y4SqIGTcXeWlYi-44" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="L3aLT-y4SqIGTcXeWlYi-40" value="generate tleap file" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="285" y="-215" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="L3aLT-y4SqIGTcXeWlYi-47" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="L3aLT-y4SqIGTcXeWlYi-41" target="L3aLT-y4SqIGTcXeWlYi-40" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="L3aLT-y4SqIGTcXeWlYi-41" value="pdb file of complex&amp;nbsp;" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+          <mxGeometry x="85" y="-270" width="150" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="L3aLT-y4SqIGTcXeWlYi-46" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" parent="1" source="L3aLT-y4SqIGTcXeWlYi-42" target="L3aLT-y4SqIGTcXeWlYi-40" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="L3aLT-y4SqIGTcXeWlYi-42" value="residues to mutate" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+          <mxGeometry x="85" y="-205" width="150" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="L3aLT-y4SqIGTcXeWlYi-48" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="L3aLT-y4SqIGTcXeWlYi-43" target="L3aLT-y4SqIGTcXeWlYi-40" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="L3aLT-y4SqIGTcXeWlYi-43" value="**args" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+          <mxGeometry x="75" y="-140" width="150" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="L3aLT-y4SqIGTcXeWlYi-44" value="tleap.in file" style="shape=document;whiteSpace=wrap;html=1;boundedLbl=1;" parent="1" vertex="1">
+          <mxGeometry x="445" y="-207" width="120" height="45" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
