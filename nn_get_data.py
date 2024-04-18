@@ -9,19 +9,19 @@ def main()   :
     mut_cmplx = {}
     
     for file_name in tmp_file_names:
-        all_bond = [] 
-        all_angle = [] 
-        all_dihed = [] 
-        all_VDW = [] 
-        all_eel = [] 
-        all_1_4_VDW = [] 
-        all_1_4_eel = [] 
-        all_egb = [] 
-        all_esurf = [] 
-        all_gas = [] 
-        all_solv = [] 
-        all_e_total = [] 
         with open(file_name) as f :
+            all_bond = [] 
+            all_angle = [] 
+            all_dihed = [] 
+            all_VDW = [] 
+            all_eel = [] 
+            all_1_4_VDW = [] 
+            all_1_4_eel = [] 
+            all_egb = [] 
+            all_esurf = [] 
+            all_gas = [] 
+            all_solv = [] 
+            all_e_total = [] 
             data = f.readlines()
             c = 0
             mut = file_name.split("_")[-1].split(".")[0]
@@ -58,7 +58,6 @@ def main()   :
                     if  line.startswith("TOTAL"):
                         all_e_total.append(line.split()[1])
                         
-                    
                     if line.startswith("Differences (Complex - Receptor - Ligand):"):
                         break
                     
@@ -66,6 +65,7 @@ def main()   :
                 all_e_total[1], all_1_4_eel[1], all_eel[1], all_egb[1], all_esurf[1],
                 all_e_total[2], all_1_4_eel[2], all_eel[2], all_egb[2], all_esurf[2]])
             mut_cmplx[mut] = data
+            print(mut_cmplx)
             
 
 
