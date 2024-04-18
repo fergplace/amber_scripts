@@ -65,7 +65,7 @@ def main()   :
                 all_e_total[1], all_1_4_eel[1], all_eel[1], all_egb[1], all_esurf[1],
                 all_e_total[2], all_1_4_eel[2], all_eel[2], all_egb[2], all_esurf[2]])
             mut_cmplx[mut] = data
-            print(mut_cmplx)
+            
             
 
 
@@ -74,7 +74,7 @@ def main()   :
             "gb-ligand-etot","gb-ligand-1-4-eel","gb-ligand-eelec","gb-ligand-egb","gb-ligand-esurf"])
   
   
-    df_data = pd.DataFrame.from_dict(mut_cmplx)
+    df_data = pd.DataFrame.from_dict(mut_cmplx, orient='index')
     df_data.columns= cols
     df_data.to_csv("all_amino_nn_data.csv")
 
