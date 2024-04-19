@@ -345,7 +345,7 @@ def general_method(input_dict, pdbfh, pdbfh_base_name, mutation, saltcon) :
     #get cwd
     cwd = os.getcwd()
     #get the three letter code as a str e.g. E484A
-    naming_conv = name_from_char+ idx + name_to_char + str(saltcon)
+    naming_conv = name_from_char+ idx + name_to_char + "_" + str(saltcon)
     #make a directory named: base_name_naming-conv_dir
     #string for dir name
     dir_name = pdbfh_base_name + "_" + naming_conv + "_dir"
@@ -462,16 +462,16 @@ def main():
     #####################################################################################
     ################################ MMPBSA in file gen #################################
     #####################################################################################
-    satlcons = np.arange(0,0.2, 0.01)
+    satlcons = np.arange(0,0.2, 0.02)
     
 
     ##TODO if mutations iterable then allow for iterable MMPBSA.sh file, user can generate them
     ##now looping over salt cons 
     for satlcon in satlcons : 
         mmbpsa_in_gen(input_dict, satlcon )
-        # for i in range(len(input_dict["MUTATIONS"])) : 
-        #     mutation = input_dict["MUTATIONS"][i]
-        #     general_method(input_dict, pdbfh, pdbfh_base_name, mutation, satlcon)
+        for i in range(len(input_dict["MUTATIONS"])) : 
+            mutation = input_dict["MUTATIONS"][i]
+            general_method(input_dict, pdbfh, pdbfh_base_name, mutation, satlcon)
 
     
     ##TODO add creations of summary file: 
