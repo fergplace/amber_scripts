@@ -101,9 +101,9 @@ def mmbpsa_sh_gen(input_dict , pdbfh_base_name , file_handle_mut_base, cwd):
         run_MMPBSA_sh_name = input_dict["MMPBSA.SH_PATH"]
     return run_MMPBSA_sh_name
 
-def mmbpsa_in_gen(input_dict ) : 
+def mmbpsa_in_gen(input_dict, saltcon ) : 
     if input_dict["MMPBSA.IN_PATH"] == []:
-        mmpbsa_in_list = mmpbsa_in()
+        mmpbsa_in_list = mmpbsa_in(saltcon)
         with open("mmpbsa.in", "w+") as mmpbsa:
             for line in mmpbsa_in_list :
                 mmpbsa.write(f"{line}")
@@ -258,7 +258,7 @@ FINAL_RESULTS_MMPBSA_tleap_{file_handle_mut_all}.dat\
         # f"{cwd}/change_radii_to_opt.py {pdbfh_base_name}_recpt.prmtop",
     return mut_bash_sh
 
-def mmpbsa_in()->list:
+def mmpbsa_in(saltcon)->list:
     """
     #TODO make this custom, 
     inputs: 
@@ -287,14 +287,14 @@ def mmpbsa_in()->list:
     
     """
     mmpbsa_in_data = [
-"""
+f"""
 sample input file for running alanine scanning
  &general
    startframe=1, endframe=200, interval=1, 
    verbose=1
 /
 &gb
-  igb=66, saltcon=0.1, probe=1.37
+  igb=66, saltcon={saltcon}, probe=1.37
 
 /
 &alanine_scanning
