@@ -29,7 +29,7 @@ def input_args_check( input_arg_path) -> dict :
                 "MMPBSA.SH_PATH": []
                 }
 
-    with open("tmp_input_file.txt", "r") as input_file:
+    with open("tmp_input_file_salt.txt", "r") as input_file:
         for line in input_file:
             if line.startswith("#input"):
                 tmp_key = line.split() #split
