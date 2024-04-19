@@ -88,9 +88,9 @@ def tleap_in_gen( input_dict,  pdbfh_base_name, file_handle_mut_base ):
     return  tleap_file_name
 
 
-def mmbpsa_sh_gen(input_dict , pdbfh_base_name , file_handle_mut_base, cwd):
+def mmbpsa_sh_gen(input_dict , pdbfh_base_name , file_handle_mut_base, cwd, saltcon):
     if input_dict["MMPBSA.SH_PATH"] == []:
-        mut_bash_file = mut_bash(pdbfh_base_name, file_handle_mut_base, cwd)
+        mut_bash_file = mut_bash(pdbfh_base_name, file_handle_mut_base, cwd, saltcon)
         
         with open("run_MMPBSA.sh", "w+") as mut_bash_sh : 
             for line in mut_bash_file : 
@@ -209,7 +209,7 @@ def tleap_gen(pdbfh_base_name,file_handle_mut_all ) -> list:
         f"quit"]
     return tleap_wild_in
 
-def mut_bash( pdbfh_base_name, file_handle_mut_all, cwd) :
+def mut_bash( pdbfh_base_name, file_handle_mut_all, cwd, saltcon) :
     '''
     pdbfh_base_name     : base name of the pdb file
     file_handle_mut_all : base bame of the mutated file 
@@ -238,7 +238,7 @@ def mut_bash( pdbfh_base_name, file_handle_mut_all, cwd) :
   
         
         f"""$AMBERHOME/bin/MMPBSA.py -O -i \
-{cwd}/mmpbsa.in -o \
+{cwd}/mmpbsa_{saltcon}.in -o \
 FINAL_RESULTS_MMPBSA_tleap_{file_handle_mut_all}.dat\
  -sp {pdbfh_base_name}_solvated.prmtop\
  -cp {pdbfh_base_name}.prmtop\
@@ -390,7 +390,7 @@ def general_method(input_dict, pdbfh, pdbfh_base_name, mutation, saltcon) :
     run_MMPBSA_sh_name = mmbpsa_sh_gen(input_dict , 
                                        pdbfh_base_name , 
                                        file_handle_mut_base,
-                                       cwd)
+                                       cwd, saltcon)
 
     #####################################################################################
     ############################## Running tleap + MMBPSA ###############################
@@ -469,9 +469,9 @@ def main():
     ##now looping over salt cons 
     for satlcon in satlcons : 
         mmbpsa_in_gen(input_dict, satlcon )
-        # for i in range(len(input_dict["MUTATIONS"])) : 
-        #     mutation = input_dict["MUTATIONS"][i]
-        #     general_method(input_dict, pdbfh, pdbfh_base_name, mutation, satlcon)
+        for i in range(len(input_dict["MUTATIONS"])) : 
+            mutation = input_dict["MUTATIONS"][i]
+            general_method(input_dict, pdbfh, pdbfh_base_name, mutation, satlcon)
 
     
     ##TODO add creations of summary file: 
