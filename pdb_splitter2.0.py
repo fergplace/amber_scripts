@@ -104,7 +104,7 @@ def mmbpsa_sh_gen(input_dict , pdbfh_base_name , file_handle_mut_base, cwd):
 def mmbpsa_in_gen(input_dict, saltcon ) : 
     if input_dict["MMPBSA.IN_PATH"] == []:
         mmpbsa_in_list = mmpbsa_in(saltcon)
-        with open("mmpbsa.in", "w+") as mmpbsa:
+        with open(f"mmpbsa_{saltcon}.in", "w+") as mmpbsa:
             for line in mmpbsa_in_list :
                 mmpbsa.write(f"{line}")
             mmpbsa.close()
@@ -462,15 +462,16 @@ def main():
     #####################################################################################
     ################################ MMPBSA in file gen #################################
     #####################################################################################
-    mmbpsa_in_gen(input_dict )
+    satlcons = np.arange(0,0.2, 0.01)
+    
 
     ##TODO if mutations iterable then allow for iterable MMPBSA.sh file, user can generate them
     ##now looping over salt cons 
-    satlcons = np.arange(0,0.2, 0.01)
     for satlcon in satlcons : 
-        for i in range(len(input_dict["MUTATIONS"])) : 
-            mutation = input_dict["MUTATIONS"][i]
-            general_method(input_dict, pdbfh, pdbfh_base_name, mutation, satlcon)
+        mmbpsa_in_gen(input_dict, satlcon )
+        # for i in range(len(input_dict["MUTATIONS"])) : 
+        #     mutation = input_dict["MUTATIONS"][i]
+        #     general_method(input_dict, pdbfh, pdbfh_base_name, mutation, satlcon)
 
     
     ##TODO add creations of summary file: 
