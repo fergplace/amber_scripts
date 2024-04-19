@@ -1,6 +1,8 @@
 import os
 import sys
 import subprocess
+import numpy as np 
+
 
 def input_args_check( input_arg_path) -> dict :
     cwd = os.getcwd()
@@ -233,12 +235,7 @@ def mut_bash( pdbfh_base_name, file_handle_mut_all, cwd) :
         f"",
         f"tleap -s -f tleap_mut.in > tleap_mut.out"
         f"",
-        f"{cwd}/change_radii_to_opt.py {pdbfh_base_name}_solvated.prmtop",
-        f"{cwd}/change_radii_to_opt.py {pdbfh_base_name}.prmtop",
-        f"{cwd}/change_radii_to_opt.py {pdbfh_base_name}_ligand.prmtop",
-        f"{cwd}/change_radii_to_opt.py {file_handle_mut_all}.prmtop", 
-        f"{cwd}/change_radii_to_opt.py {file_handle_mut_all}_ligand.prmtop",
-        f"{cwd}/change_radii_to_opt.py {pdbfh_base_name}_recpt.prmtop",
+  
         
         f"""$AMBERHOME/bin/MMPBSA.py -O -i \
 {cwd}/mmpbsa.in -o \
@@ -251,6 +248,14 @@ FINAL_RESULTS_MMPBSA_tleap_{file_handle_mut_all}.dat\
  -mc {file_handle_mut_all}.prmtop\
  -ml {file_handle_mut_all}_ligand.prmtop"""
         ]
+    
+    
+        # f"{cwd}/change_radii_to_opt.py {pdbfh_base_name}_solvated.prmtop",
+        # f"{cwd}/change_radii_to_opt.py {pdbfh_base_name}.prmtop",
+        # f"{cwd}/change_radii_to_opt.py {pdbfh_base_name}_ligand.prmtop",
+        # f"{cwd}/change_radii_to_opt.py {file_handle_mut_all}.prmtop", 
+        # f"{cwd}/change_radii_to_opt.py {file_handle_mut_all}_ligand.prmtop",
+        # f"{cwd}/change_radii_to_opt.py {pdbfh_base_name}_recpt.prmtop",
     return mut_bash_sh
 
 def mmpbsa_in()->list:
@@ -316,7 +321,7 @@ def input_args_from_text( file_handle ) -> list :
         
     return input_arg_list 
  
-def general_method(input_dict, pdbfh, pdbfh_base_name, mutation) : 
+def general_method(input_dict, pdbfh, pdbfh_base_name, mutation, saltcon) : 
     """
     general process: 
     input_dict: from input_args_check
@@ -340,7 +345,7 @@ def general_method(input_dict, pdbfh, pdbfh_base_name, mutation) :
     #get cwd
     cwd = os.getcwd()
     #get the three letter code as a str e.g. E484A
-    naming_conv = name_from_char+ idx + name_to_char
+    naming_conv = name_from_char+ idx + name_to_char + str(saltcon)
     #make a directory named: base_name_naming-conv_dir
     #string for dir name
     dir_name = pdbfh_base_name + "_" + naming_conv + "_dir"
@@ -460,10 +465,13 @@ def main():
     mmbpsa_in_gen(input_dict )
 
     ##TODO if mutations iterable then allow for iterable MMPBSA.sh file, user can generate them
-    for i in range(len(input_dict["MUTATIONS"])) : 
-        mutation = input_dict["MUTATIONS"][i]
-        general_method(input_dict, pdbfh, pdbfh_base_name, mutation)
-    
+    ##now looping over salt cons 
+    satlcons = np.arange(0,0.2, 0.01)
+    for satlcon in satlcons : 
+        for i in range(len(input_dict["MUTATIONS"])) : 
+            mutation = input_dict["MUTATIONS"][i]
+            general_method(input_dict, pdbfh, pdbfh_base_name, mutation, satlcon)
+
     
     ##TODO add creations of summary file: 
     
