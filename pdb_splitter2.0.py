@@ -458,7 +458,7 @@ def main():
     
     pdbfh = input_dict["WILD_TYPE"][0]
     pdbfh_base_name = os.path.basename(pdbfh).split(".")[0] #getting the base name 
-
+    print(input_dict["MUTATIONS"])
     #####################################################################################
     ################################ MMPBSA in file gen #################################
     #####################################################################################
@@ -469,9 +469,9 @@ def main():
     ##now looping over salt cons 
     for satlcon in satlcons : 
         mmbpsa_in_gen(input_dict, satlcon )
-        for i in range(len(input_dict["MUTATIONS"])) : 
-            mutation = input_dict["MUTATIONS"][i]
-            general_method(input_dict, pdbfh, pdbfh_base_name, mutation, satlcon)
+        # for i in range(len(input_dict["MUTATIONS"])) : 
+        #     mutation = input_dict["MUTATIONS"][i]
+        #     general_method(input_dict, pdbfh, pdbfh_base_name, mutation, satlcon)
 
     
     ##TODO add creations of summary file: 
