@@ -11,11 +11,11 @@ def main()   :
     os.system(f"mkdir {dir_path}")
     
     for file in tmp_file_names :
-        print(file)
-        cp_path = dir_path + "/" + file
+        
+        cp_path = dir_path + "/" 
         os.system(f"cp {file} {cp_path}")
         
-        break 
+         
 
 if __name__ == '__main__':
     main()
