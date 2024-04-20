@@ -9,7 +9,7 @@ def main()   :
     delta_delta_g_gen_66 = [] 
     delta_delta_g_gen_66_error = []
 
-    tmp_file_loc = "*_dir/FINAL_RESULTS*A_"
+    tmp_file_loc = "*_dir/FINAL_RESULTS*A_0*"
     tmp_file_names = glob.glob(tmp_file_loc)
     for file_name in tmp_file_names:
         with open(file_name) as f :
