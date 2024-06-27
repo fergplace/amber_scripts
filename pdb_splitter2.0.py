@@ -462,12 +462,12 @@ def main():
     #####################################################################################
     ################################ MMPBSA in file gen #################################
     #####################################################################################
-    satlcons = np.arange(0,0.2, 0.02)
-    
+    #saltcons = np.arange(0,0.2, 0.02)
+    saltcons =  np.array([0.1]) 
 
     ##TODO if mutations iterable then allow for iterable MMPBSA.sh file, user can generate them
     ##now looping over salt cons 
-    for satlcon in satlcons : 
+    for satlcon in saltcons : 
         mmbpsa_in_gen(input_dict, satlcon )
         for i in range(len(input_dict["MUTATIONS"])) : 
             mutation = input_dict["MUTATIONS"][i]
