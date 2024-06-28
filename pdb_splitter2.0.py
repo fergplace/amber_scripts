@@ -290,16 +290,18 @@ def mmpbsa_in(saltcon)->list:
 f"""
 sample input file for running alanine scanning
  &general
-   startframe=1, endframe=200, interval=1, 
+   startframe=1, endframe=2000, interval=5, 
    verbose=1
 /
 &gb
-  igb=66, saltcon={saltcon}, probe=1.37
-
+  igb=66, saltcon={saltcon} 
+/
+&pb
+    istrng=0.100,
 /
 &alanine_scanning
 /
-"""]
+"""] #, probe=1.37 (removed after saltcon)
     return mmpbsa_in_data
 
 ##TODO remove this 
