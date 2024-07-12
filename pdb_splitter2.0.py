@@ -346,10 +346,10 @@ def general_method(input_dict, pdbfh, pdbfh_base_name, mutation, saltcon) :
     #get cwd
     cwd = os.getcwd()
     #get the three letter code as a str e.g. E484A
-    naming_conv = name_from_char+ idx + name_to_char + "_" + str(saltcon)
+    naming_conv = name_from_char+ idx + name_to_char + "_" + str(saltcon) + "_OPT"
     #make a directory named: base_name_naming-conv_dir
     #string for dir name
-    dir_name = pdbfh_base_name + "_" + naming_conv + "OPT_dir"
+    dir_name = pdbfh_base_name + "_" + naming_conv + "_dir"
     #path to dir
     dir_name_path = "./" + dir_name
     #path for other files
