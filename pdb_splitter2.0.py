@@ -235,8 +235,12 @@ def mut_bash( pdbfh_base_name, file_handle_mut_all, cwd, saltcon) :
         f"",
         f"tleap -s -f tleap_mut.in > tleap_mut.out"
         f"",
-  
-        
+        f"{cwd}/change_radii_to_opt.py {pdbfh_base_name}_solvated.prmtop",
+        f"{cwd}/change_radii_to_opt.py {pdbfh_base_name}.prmtop",
+        f"{cwd}/change_radii_to_opt.py {pdbfh_base_name}_ligand.prmtop",
+        f"{cwd}/change_radii_to_opt.py {file_handle_mut_all}.prmtop", 
+        f"{cwd}/change_radii_to_opt.py {file_handle_mut_all}_ligand.prmtop",
+        f"{cwd}/change_radii_to_opt.py {pdbfh_base_name}_recpt.prmtop",
         f"""$AMBERHOME/bin/MMPBSA.py -O -i \
 {cwd}/mmpbsa_{saltcon}.in -o \
 FINAL_RESULTS_MMPBSA_tleap_{file_handle_mut_all}.dat\
@@ -250,12 +254,7 @@ FINAL_RESULTS_MMPBSA_tleap_{file_handle_mut_all}.dat\
         ]
     
     
-        # f"{cwd}/change_radii_to_opt.py {pdbfh_base_name}_solvated.prmtop",
-        # f"{cwd}/change_radii_to_opt.py {pdbfh_base_name}.prmtop",
-        # f"{cwd}/change_radii_to_opt.py {pdbfh_base_name}_ligand.prmtop",
-        # f"{cwd}/change_radii_to_opt.py {file_handle_mut_all}.prmtop", 
-        # f"{cwd}/change_radii_to_opt.py {file_handle_mut_all}_ligand.prmtop",
-        # f"{cwd}/change_radii_to_opt.py {pdbfh_base_name}_recpt.prmtop",
+        
     return mut_bash_sh
 
 def mmpbsa_in(saltcon)->list:
@@ -350,7 +349,7 @@ def general_method(input_dict, pdbfh, pdbfh_base_name, mutation, saltcon) :
     naming_conv = name_from_char+ idx + name_to_char + "_" + str(saltcon)
     #make a directory named: base_name_naming-conv_dir
     #string for dir name
-    dir_name = pdbfh_base_name + "_" + naming_conv + "_dir"
+    dir_name = pdbfh_base_name + "_" + naming_conv + "OPT_dir"
     #path to dir
     dir_name_path = "./" + dir_name
     #path for other files
