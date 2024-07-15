@@ -126,8 +126,7 @@ def change_radii_sh( pdbfh_base_name, cwd  ) :
 
 def equil_sh_gen():
 
-	equil_sh = ['''
-	#!/bin/bash
+	equil_sh = ['''#!/bin/bash
 	#SBATCH --job-name=run_equil
 	#SBATCH --partition=gpu
 	#SBATCH --gpus=4
@@ -164,9 +163,7 @@ def equil_sh_gen():
 
 def run_sim_sh_gen():
 
-	sim_sh = ['''
-	#!/bin/bash
-
+	sim_sh = ['''#!/bin/bash
 	#SBATCH --job-name=run_prod
 	#SBATCH --partition=gpu
 	#SBATCH --ntasks=4
