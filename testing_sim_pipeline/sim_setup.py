@@ -213,13 +213,13 @@ module load amber
 source /opt/calstatela/amber-22/amber22/amber.sh
 
 $AMBERHOME/bin/pmemd.cuda -O -i min.in -o min.out -p {pdbfh_base_name}_solvated.prmtop -c {pdbfh_base_name}_solvated.inpcrd \
--r min.rst 
+-r min.rst -ref {pdbfh_base_name}_solvated.inpcrd
 echo "min done"
 $AMBERHOME/bin/pmemd.cuda -O -i heat.in -o heat.out -p {pdbfh_base_name}_solvated.prmtop -c min.rst \
 -r heat.rst -x heat.mdcrd -ref min.rst
 
 echo "heat done"
-$AMBERHOME/bin/pmemd.cuda -O -i density.in -o density.out -p {pdbfh_base_name}_solvated.BOX.prmtop -c heat.rst \
+$AMBERHOME/bin/pmemd.cuda -O -i density.in -o density.out -p {pdbfh_base_name}_solvated.prmtop -c heat.rst \
 -r density.rst -x density.mdcrd -ref heat.rst
 
 echo "density done"
