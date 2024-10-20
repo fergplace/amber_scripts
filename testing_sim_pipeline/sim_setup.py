@@ -199,8 +199,56 @@ mpirun -v -np 4 $AMBERHOME/bin/pmemd.cuda.MPI -O -i prod.in -o prod4.out \
 		equil_sh_name = "run_sim.sh"
   
 
-def all_process_sh_gen(pdbfh_base_name)
+def all_process_sh_gen(pdbfh_base_name):
+    all_process_sh = [f'''#!/bin/bash
+#SBATCH --job-name=MD_pipeline
+#SBATCH --partition=gpu
+#SBATCH --exclusive
+#SBATCH --output=MD_pipeline.out
+#SBATCH --error=MD_pipeline.error
+#SBATCH --time=72:00:00
 
+echo "Loading modules..."
+module load amber  
+source /opt/calstatela/amber-22/amber22/amber.sh
+
+$AMBERHOME/bin/pmemd.cuda -O -i min.in -o min.out -p {pdbfh_base_name}_solvated.prmtop -c {pdbfh_base_name}_solvated.inpcrd \
+-r min.rst 
+echo "min done"
+$AMBERHOME/bin/pmemd.cuda -O -i heat.in -o heat.out -p {pdbfh_base_name}_solvated.prmtop -c min.rst \
+-r heat.rst -x heat.mdcrd -ref min.rst
+
+echo "heat done"
+$AMBERHOME/bin/pmemd.cuda -O -i density.in -o density.out -p {pdbfh_base_name}_solvated.BOX.prmtop -c heat.rst \
+-r density.rst -x density.mdcrd -ref heat.rst
+
+echo "density done"
+$AMBERHOME/bin/pmemd.cuda -O -i equil.in -o equil.out -p {pdbfh_base_name}_solvated.prmtop -c density.rst \
+-r equil.rst -x equil.mdcrd
+
+mpirun -v -np 4 $AMBERHOME/bin/pmemd.cuda.MPI -O -i prod.in -o prod1.out \
+-p {pdbfh_base_name}_solvated.prmtop -c equil.rst -r prod1.rst -x prod1.mdcrd
+
+echo "prod 1 done ..."
+mpirun -v -np 4 $AMBERHOME/bin/pmemd.cuda.MPI -O -i prod.in -o prod2.out \
+-p {pdbfh_base_name}_solvated.prmtop -c prod1.rst -r prod2.rst -x prod2.mdcrd
+
+echo "prod 2 done..."
+mpirun -v -np 4 $AMBERHOME/bin/pmemd.cuda.MPI -O -i prod.in -o prod3.out \
+-p {pdbfh_base_name}_solvated.prmtop -c prod2.rst -r prod3.rst -x prod3.mdcrd
+
+echo "prod 3 done..."
+mpirun -v -np 4 $AMBERHOME/bin/pmemd.cuda.MPI -O -i prod.in -o prod4.out \
+-p {pdbfh_base_name}_solvated.prmtop -c prod3.rst -r prod4.rst -x prod4.mdcrd''']
+    
+    
+    
+    with open("all_process.sh", "w+") as all_process_sh_file : 
+        for line in all_process_sh : 
+            all_process_sh_file.write(f"{line}\n")
+        all_process_sh_file.close()
+        all_process_sh_name = "all_process.sh"
+        
 def main(pdbfh):
     
     pdbfh =pdbfh #"6m0j_noHet.pdb"
@@ -225,7 +273,7 @@ def main(pdbfh):
     
     equil_sh_gen(pdbfh_base_name)
     run_sim_sh_gen(pdbfh_base_name)
-    
+    all_process_sh_gen(pdbfh_base_name)
     
 if __name__ == '__main__':
     main()
